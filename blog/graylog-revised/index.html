@@ -199,7 +199,7 @@ indices.query.bool.max_clause_count: 32768"</span> <span class="token operator">
 <pre class="language-bash" tabindex="0"><code class="language-bash"><span class="token function">wget</span> https://packages.graylog2.org/repo/packages/graylog-6.1-repository_latest.deb</code></pre>
 <p>Install it.</p>
 <pre class="language-bash" tabindex="0"><code class="language-bash"><span class="token function">sudo</span> dpkg <span class="token parameter variable">-i</span> graylog-6.1-repository_latest.deb</code></pre>
-<p>The repositiories your package manager checks should now include Graylog's repos. Update them.</p>
+<p>The repositories your package manager checks should now include Graylog's repos. Update them.</p>
 <pre class="language-bash" tabindex="0"><code class="language-bash"><span class="token function">sudo</span> <span class="token function">apt-get</span> update</code></pre>
 <p>Install Graylog.</p>
 <pre class="language-bash" tabindex="0"><code class="language-bash"><span class="token function">sudo</span> <span class="token function">apt-get</span> <span class="token function">install</span> graylog-datanode</code></pre>
@@ -210,9 +210,9 @@ indices.query.bool.max_clause_count: 32768"</span> <span class="token operator">
 <pre class="language-bash" tabindex="0"><code class="language-bash"><span class="token assign-left variable">vm.max_map_count</span><span class="token operator">=</span><span class="token number">262144</span></code></pre>
 <p>Reload the config.</p>
 <pre class="language-bash" tabindex="0"><code class="language-bash"><span class="token function">sudo</span> <span class="token function">sysctl</span> <span class="token parameter variable">-p</span></code></pre>
-<p>Create a password secret and copy the output to a file editor.  You'll need it for the next step and later as well.</p>
+<p>Create a password secret and copy the output to a file editor. You'll need it for the next step and later as well.</p>
 <pre class="language-bash" tabindex="0"><code class="language-bash"><span class="token operator">&lt;</span> /dev/urandom <span class="token function">tr</span> <span class="token parameter variable">-dc</span> A-Z-a-z-0-9 <span class="token operator">|</span> <span class="token function">head</span> -c<span class="token variable">${1<span class="token operator">:-</span>96}</span><span class="token punctuation">;</span><span class="token builtin class-name">echo</span><span class="token punctuation">;</span></code></pre>
-<p>Open the config file using vim (you can use nano if you prefer something straighforward). Paste the above into the <code>password_secret</code> line, no quotations.</p>
+<p>Open the config file using vim (you can use nano if you prefer something straightforward). Paste the above into the <code>password_secret</code> line, no quotations.</p>
 <pre class="language-bash" tabindex="0"><code class="language-bash"><span class="token function">sudo</span> <span class="token function">vim</span> /etc/graylog/datanode/datanode.conf</code></pre>
 <p>Enable the Graylog service.</p>
 <pre class="language-bash" tabindex="0"><code class="language-bash"><span class="token function">sudo</span> systemctl <span class="token builtin class-name">enable</span> graylog-datanode.service</code></pre>
