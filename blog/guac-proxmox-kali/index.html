@@ -113,8 +113,8 @@ Dark
 <heading-anchors>
 <p><time datetime="2025-05-02">02 May 2025</time></p>
 <div class="grid"><div><img src="/img/2025-05-03_10-48.png" loading="lazy" title=""></div><div></div></div>
-<p>In this post I describe why I installed Apache Guacamole (non-Docker) to connect to a Kali VM and how I did so.  I envision this post as part of a series in which I migrate from using Vagrant with VMWare workstation to Proxmox with OpenTofu and Ansible.</p>
-<br> 
+<p>In this post I describe why I installed Apache Guacamole (non-Docker) to connect to a Kali VM and how I did so. I envision this post as part of a series in which I migrate from using Vagrant with VMWare workstation to Proxmox with OpenTofu and Ansible.</p>
+<br>
 <br>
 <p>Overview in Brief:</p>
 <ul>
@@ -123,48 +123,48 @@ Dark
 <li><a href="https://christopherbauer.xyz/blog/guac-proxmox-kali/#no-docker" class="primary">No Docker?</a></li>
 <li><a href="https://christopherbauer.xyz/blog/guac-proxmox-kali/#guide-to-installing-apache-guacamole" class="primary">Install Guide</a></li>
 </ul>
-<br> 
+<br>
 <br>
 <h2 id="what-to-do-about-frequent-kali-crashes">What to do About Frequent Kali Crashes?</h2>
-<p>When I was working on my OSCP certification, I frequently encountered Kali crashes.  For those unfamiliar, Kali crashes seem to be commonly accepted, as though they were a &quot;fact of life&quot; among Kali users.  In my case, downloading a bunch of exploit code probably didn't help stability of the OS, but I'd noticed that even fresh installs of Kali were sometimes wonky.  Maybe it was my IaC/VM install method, I'm not laying blame here.  Bottom line was that I made sure I put in place an automated way to get a new copy of Kali up and running, typically through a VM.  This came to be seared into my brain as table stakes for running Kali.</p>
-<p>Up to now my solution to this combines Vagrant with VMWare Workstation on my primary machine.  Of course installing is only half the problem.  A fresh OS install still leaves you with a pile of work on configs and preference settings. What about my bespoke command notes and CLI history?  What about my CLI preferences  like vim keybinds, fzf search, or auto complete?  What about config files for tools like Feroxbuster or my Neovim config to make code easier to read?  There is a lot of provisioning required, as I'm sure readers know.  I've started moving my provisioning methods over to Ansible.</p>
-<p>To be clear, a discussion on the merits of whether to automate using Bash scripts or Ansible is outside the scope of this already long post.  Of course I could use Bash scripts, and indeed that is how I got started provisioning after Vagrant builds when I first began using Vagrant.  However, I never knew when something had broken with my scripts, they just marched on mindlessly.  Sure there are ways to ensure scripts report errors and exit responsibly and much more besides that I haven't learned yet.  However, with the popularity of Ansible as a provisioning solution, it turns out I've already encountered it a few times without really understanding it in other contexts.  So, as an idempotent option it seemed like now was a time to start learning.</p>
-<p>When I switched to using Ansible with Vagrant, I noticed some issues I hadn't seen before.  Vagrant, in combination with VMWare and Ansible was starting to appear overburdened.  For one thing, running the Kali VM on my primary machine took up more overhead on than I would have liked.  That wasn't the fault of VMWare or Vagrant, I'd just rather run the VM on another machine.  For another, it seemed that anytime I wanted to run Vagrant, I had to make sure all the extensions were properly updated, that the box selection was correct, and any manner of other minutiae.  While this is common, what was unusual was my bespoke solution made no prompt when I started, to resolve these issues before running.  This constelation of factors has had me wonderoing about running Kali on a Hypervisor I know well: Proxmox.  Ultimately, I'd like to learn OpenTofu to provision Kali on Proxmox, but that is a topic for another post.</p>
+<p>When I was working on my OSCP certification, I frequently encountered Kali crashes. For those unfamiliar, Kali crashes seem to be commonly accepted, as though they were a &quot;fact of life&quot; among Kali users. In my case, downloading a bunch of exploit code probably didn't help stability of the OS, but I'd noticed that even fresh installs of Kali were sometimes wonky. Maybe it was my IaC/VM install method, I'm not laying blame here. Bottom line was that I made sure I put in place an automated way to get a new copy of Kali up and running, typically through a VM. This was seared into my brain as table stakes for running Kali.</p>
+<p>Up to now my solution to this combines Vagrant with VMWare Workstation on my primary machine. Of course installing is only half the problem. A fresh OS install still leaves you with a pile of work on configs and preference settings. What about my bespoke command notes and CLI history? What about my CLI preferences like vim keybinds, fzf search, or auto complete? What about config files for tools like Feroxbuster or my Neovim config to make code easier to read? There is a lot of provisioning required, as I'm sure readers know. I've started moving my provisioning methods over to Ansible.</p>
+<p>To be clear, a discussion on the merits of whether to automate using Bash scripts or Ansible is outside the scope of this already long post. Of course I could use Bash scripts, and indeed that is how I got started provisioning after Vagrant builds when I first began using Vagrant. However, I never knew when something had broken with my scripts, they just marched on mindlessly. Sure there are ways to ensure scripts report errors and exit responsibly and much more besides that I haven't learned yet. However, with the popularity of Ansible as a provisioning solution, it turns out I've already encountered it a few times without really understanding it in other contexts. So, as an idempotent option it seemed like now was a time to start learning.</p>
+<p>When I switched to using Ansible with Vagrant, I noticed some issues I hadn't seen before. Vagrant, in combination with VMWare and Ansible was starting to appear overburdened. For one thing, running the Kali VM on my primary machine took up more overhead on than I would have liked. That wasn't the fault of VMWare or Vagrant, I'd just rather run the VM on another machine. For another, it seemed that anytime I wanted to run Vagrant, I had to make sure all the extensions were properly updated, that the box selection was correct, and any manner of other minutiae. While this is common, what was unusual was my bespoke solution made no prompt when I started, to resolve these issues before running. This constellation of factors has had me wondering about running Kali on a Hypervisor I know well: Proxmox. Ultimately, I'd like to learn OpenTofu to provision Kali on Proxmox, but that is a topic for another post.</p>
 <h3 id="wait-you-ve-got-more-constraints">Wait, You've Got More Constraints?</h3>
-<p>To resolve these issues, I wanted to outsource running Kali VM to my Proxmox server.  The hitch with this plan was that Proxmox doesn't share VMWare's seamless remote desktop option.  Instead, Proxmox's remote desktop options seem like, well lets call them the main cabin class of passangers on the Proxmox ship.  When you fire up a VM in Workstation, there isn't even an option to configure a remote desktop, it is simply baked in, with copy and paste, and runs immediately.</p>
-<p>There was another hitch with this plan though.  Proxmox after all, is not without options here.  The SPICE protocol that I've traditionally used for remote desktop to my Proxmox VMs hasn't been working on my nodes despite troubleshooting.  VNC was, of course, an option as Proxmox's default that is automatically installed into new VMs.  However, I found working with the noVNC solution janky.  It's fine for initial install or to set up SSH.  It hasn't been a true replacement for a remote desktop.  I've always found something off about it, as though I'm working with a lag.  Most importantly, it hasn't, to my knowledge, offered copy and paste.  So whatever solution I devised had to implement something outside of Proxmox's own remote desktop options.</p>
+<p>To resolve these issues, I wanted to outsource running Kali VM to my Proxmox server. The hitch with this plan was that Proxmox doesn't share VMWare's seamless remote desktop option. Instead, Proxmox's remote desktop options seem like, well lets call them the main cabin class of passengers on the Proxmox ship. When you fire up a VM in Workstation, there isn't even an option to configure a remote desktop, it is simply baked in, with copy and paste, and runs immediately.</p>
+<p>There was another hitch with this plan though. Proxmox after all, is not without options here. The SPICE protocol that I've traditionally used for remote desktop to my Proxmox VMs hasn't been working on my nodes despite troubleshooting. VNC was, of course, an option as Proxmox's default that is automatically installed into new VMs. However, I found working with the noVNC solution janky. It's fine for initial install or to set up SSH. It hasn't been a true replacement for a remote desktop. I've always found something off about it, as though I'm working with a lag. Most importantly, it hasn't, to my knowledge, offered copy and paste. So whatever solution I devised had to implement something outside of Proxmox's own remote desktop options.</p>
 <h2 id="solution-design">Solution Design</h2>
-<p>I settled on setting up a standalone <a href="https://guacamole.apache.org/" class="primary">Apache Guacamole</a>  server.  For those unfamiliar, a Guacamole server (hereafter Guac) is unique as a remote desktop solution in that it utilizes HTML5 over a browser for a &quot;clientless&quot; connection architecture.  You set up the Guac server as well as a VNC server on the target, and simply connect by opening a browser.</p>
-<p>For my solution, I envisioned a simple design.  I would create an independent Guac server on a Proxmox VM (early tests showed an LXC wouldn't work with a build method) that would serve as the connection relay.  That would connect my local machine through any old browser to a standalone Kali VM, also provided by Proxmox.  To resolve the frequent Kali crashes, I would investigate OpenTofu at a later date, as my Ansible scripts for provisioning are ready today.</p>
-<p>Yes, this deisgn meant three computers/VMs rather than if I'd hosted Guac on Kali itself.  However, as I said, Kali crashes often and Guac isn't a simple install, so having a third machine to act as an independent Guac server seemed prudent to avoid re-provisioning Guac itself.  One added benefit to this solution that I could see was that it'd allow me to later enroll family members' remote machines with a VPN for troubleshooting through the Guac server.</p>
-<p>To build Guac, you'll install two primary parts: the server and what Apache calls the &quot;client.&quot;  I find this naming confusing given the traditional notion of a server and a remote client, versus a &quot;web client&quot; as they define here. I'll refer to them as the backend and web app frontend respectively.  I built Guac-Server/backend from source.  For the web app frontend I simply installed Tomcat9 and inserted the Apache-supplied .war file.</p>
-<p>The only  part of this build that was complex was dealing with x11 on Kali to create automatic start up of TigerVNC.  But I'll get to that soon enough.  Installing the primary components went along pretty smoothly, though it was a bit complex.</p>
+<p>I settled on setting up a standalone <a href="https://guacamole.apache.org/" class="primary">Apache Guacamole</a>  server. For those unfamiliar, a Guacamole server (hereafter Guac) is unique as a remote desktop solution in that it utilizes HTML5 over a browser for a &quot;clientless&quot; connection architecture. You set up the Guac server as well as a VNC server on the target, and simply connect by opening a browser.</p>
+<p>For my solution, I envisioned a simple design. I would create an independent Guac server on a Proxmox VM (early tests showed an LXC wouldn't work with a build method) that would serve as the connection relay. That would connect my local machine through any old browser to a standalone Kali VM, also provided by Proxmox. To resolve the frequent Kali crashes, I would investigate OpenTofu at a later date, as my Ansible scripts for provisioning are ready today.</p>
+<p>Yes, this design meant three computers/VMs rather than if I'd hosted Guac on Kali itself. However, as I said, Kali crashes often and Guac isn't a simple install, so having a third machine to act as an independent Guac server seemed prudent to avoid re-provisioning Guac itself. One added benefit to this solution that I could see was that it'd allow me to later enroll family members' remote machines with a VPN for troubleshooting through the Guac server.</p>
+<p>To build Guac, you'll install two primary parts: the server and what Apache calls the &quot;client.&quot; I find this naming confusing given the traditional notion of a server and a remote client, versus a &quot;web client&quot; as they define here. I'll refer to them as the backend and web app frontend respectively. I built Guac-Server/backend from source. For the web app frontend I simply installed Tomcat9 and inserted the Apache-supplied .war file.</p>
+<p>The only part of this build that was complex was dealing with x11 on Kali to create automatic start up of TigerVNC. But I'll get to that soon enough. Installing the primary components went along pretty smoothly, though it was a bit complex.</p>
 <h3 id="no-docker">No Docker?</h3>
-<p>I also dismissed the option of a Docker install method this time.  I chose to avoid docker for a variety of reasons, some of which <a href="https://christopherbauer.xyz/blog/docker-trouble/" class="primary">I've talked about before</a> .  In brief, when I create single-purpose servers like this, I usually reject Docker as I tend to think that I can tweak the server's settings to match the single piece of software I want to use to more tightly integrate the distro and the software.  Moreover, some enterprise-level software tends to run better directly on a machine (I'm thinking of Graylog as an example that suggests not using it's containerized version for production).  And last, I just find it easier to troubleshoot on a headless server if the software isn't also behind a container's isolation where there may or may not be the tools you need, and you may or may not be able to run standard Linux commands.</p>
-<br> 
+<p>I also dismissed the option of a Docker install method this time. I chose to avoid docker for a variety of reasons, some of which <a href="https://christopherbauer.xyz/blog/docker-trouble/" class="primary">I've talked about before</a> . In brief, when I create single-purpose servers like this, I usually reject Docker as I tend to think that I can tweak the server's settings to match the single piece of software I want to use to more tightly integrate the distro and the software. Moreover, some enterprise-level software tends to run better directly on a machine (I'm thinking of Graylog as an example that suggests not using it's containerized version for production). And last, I just find it easier to troubleshoot on a headless server if the software isn't also behind a container's isolation where there may or may not be the tools you need, and you may or may not be able to run standard Linux commands.</p>
+<br>
 <br>
 <h2 id="guide-to-installing-apache-guacamole">Guide to Installing Apache Guacamole</h2>
 <p>All told, I installed or configured software on three separate computers/vms using the command line that included:</p>
 <ul>
-<li>An Ubuntu 24.04 VM headless server for Guac-server backend, the  Guac web frontend, and a database</li>
-<li>A Kali 2025.1c VM running the VNC server  <a href="https://tigervnc.org/" class="primary">TigerVNC</a></li>
+<li>An Ubuntu 24.04 VM headless server for Guac-server backend, the Guac web frontend, and a database</li>
+<li>A Kali 2025.1c VM running the VNC server <a href="https://tigervnc.org/" class="primary">TigerVNC</a></li>
 <li>My local machine with a browser</li>
 </ul>
-<p>For brevity in this post, such as it is, I won't cover creating VMs in proxmox.  I used the instructions <a href="https://www.kali.org/docs/virtualization/install-proxmox-guest-vm/" class="primary">provided by Kali</a>  to import a Kali prebuilt VM.  There were also a number of sources (some outdated) on the overall process that helped, including <a href="https://www.linode.com/docs/guides/installing-apache-guacamole-on-ubuntu-and-debian/" class="primary">this Akamai post</a>  and the <a href="https://guacamole.apache.org/doc/gug/installing-guacamole.html#installing-guacamole-natively" class="primary">original documentation</a> .</p>
-<br> 
+<p>For brevity in this post, such as it is, I won't cover creating VMs in proxmox. I used the instructions <a href="https://www.kali.org/docs/virtualization/install-proxmox-guest-vm/" class="primary">provided by Kali</a>  to import a Kali pre-built VM. There were also a number of sources (some outdated) on the overall process that helped, including <a href="https://www.linode.com/docs/guides/installing-apache-guacamole-on-ubuntu-and-debian/" class="primary">this Akamai post</a>  and the <a href="https://guacamole.apache.org/doc/gug/installing-guacamole.html#installing-guacamole-natively" class="primary">original documentation</a> .</p>
+<br>
 <br>
 <h3 id="installing-the-server-backend">Installing the Server/Backend</h3>
-<p>Shoutout to credit where it's due: I followed <a href="https://guacamole.apache.org/doc/gug/installing-guacamole.html">the official instructions</a> with help from <a href="https://medium.com/@anshumaansingh10jan/unlocking-remote-access-a-comprehensive-guide-to-installing-and-configuring-apache-guacamole-on-30a4fd227fcd">this blog</a>.</p>
+<p>Shout out to credit where it's due: I followed <a href="https://guacamole.apache.org/doc/gug/installing-guacamole.html">the official instructions</a> with help from <a href="https://medium.com/@anshumaansingh10jan/unlocking-remote-access-a-comprehensive-guide-to-installing-and-configuring-apache-guacamole-on-30a4fd227fcd">this blog</a>.</p>
 <p>First make sure your system is up to date.</p>
 <pre class="language-shell" tabindex="0"><code class="language-shell"><span class="token function">sudo</span> <span class="token function">apt</span> update <span class="token operator">&amp;&amp;</span> <span class="token function">sudo</span> <span class="token function">apt</span> upgrade <span class="token parameter variable">-y</span></code></pre>
-<p>Guac can connect using VNC, RDP or offer an SSH connection to a terminal shown through the browser.  I opted to install all the associated dependencies for these options, prior to installing, just to cover all eventualities.</p>
+<p>Guac can connect using VNC, RDP or offer an SSH connection to a terminal shown through the browser. I opted to install all the associated dependencies for these options, prior to installing, just to cover all eventualities.</p>
 <pre class="language-shell" tabindex="0"><code class="language-shell"><span class="token function">sudo</span> <span class="token function">apt</span> <span class="token function">install</span> build-essential libcairo2-dev libjpeg-turbo8-dev <span class="token punctuation">\</span>
     libpng-dev libtool-bin libossp-uuid-dev libvncserver-dev <span class="token punctuation">\</span>
     freerdp2-dev libssh2-1-dev libtelnet-dev libwebsockets-dev <span class="token punctuation">\</span>
     libpulse-dev libvorbis-dev libwebp-dev libssl-dev <span class="token punctuation">\</span>
     libpango1.0-dev libswscale-dev libavcodec-dev libavutil-dev <span class="token punctuation">\</span>
     libavformat-dev</code></pre>
-<p>The official website is <a href="https://guacamole.apache.org/releases/">here</a> with the latest releases.  Download the release.</p>
+<p>The official website is <a href="https://guacamole.apache.org/releases/">here</a> with the latest releases. Download the release.</p>
 <pre class="language-shell" tabindex="0"><code class="language-shell"><span class="token function">wget</span> https://apache.org/dyn/closer.lua/guacamole/1.5.5/source/guacamole-server-1.5.5.tar.gz?action<span class="token operator">=</span>download <span class="token parameter variable">-O</span> guacamole-server-1.5.5.tar.gz</code></pre>
 <p>Decompress the release.</p>
 <pre class="language-shell" tabindex="0"><code class="language-shell"><span class="token function">sudo</span> <span class="token function">tar</span> <span class="token parameter variable">-xvf</span> guacamole-server-1.5.5.tar.gz</code></pre>
@@ -173,19 +173,19 @@ Dark
 <pre class="language-shell" tabindex="0"><code class="language-shell"><span class="token function">sudo</span> ./configure --with-init-dir<span class="token operator">=</span>/etc/init.d --enable-allow-freerdp-snapshots</code></pre>
 <pre class="language-shell" tabindex="0"><code class="language-shell"><span class="token function">sudo</span> <span class="token function">make</span></code></pre>
 <pre class="language-shell" tabindex="0"><code class="language-shell"><span class="token function">sudo</span> <span class="token function">make</span> <span class="token function">install</span></code></pre>
-<p>Now that you've installed, stay in that directory for a moment longer.  Create links and cache to the shared libraries of the Guac folder.</p>
+<p>Now that you've installed, stay in that directory for a moment longer. Create links and cache to the shared libraries of the Guac folder.</p>
 <pre class="language-shell" tabindex="0"><code class="language-shell"><span class="token function">sudo</span> ldconfig</code></pre>
-<p>Then ensure the Service File is loaded, enabled, and started.</p>
-<pre class="language-shell" tabindex="0"><code class="language-shell"><span class="token function">sudo</span> systemctl daemon-reload </code></pre>
-<pre class="language-shell" tabindex="0"><code class="language-shell"><span class="token function">sudo</span> systemctl <span class="token builtin class-name">enable</span> guacd </code></pre>
-<pre class="language-shell" tabindex="0"><code class="language-shell"><span class="token function">sudo</span> systemctl start guacd </code></pre>
+<p>Then ensure the Service File has been loaded, enabled, and started.</p>
+<pre class="language-shell" tabindex="0"><code class="language-shell"><span class="token function">sudo</span> systemctl daemon-reload</code></pre>
+<pre class="language-shell" tabindex="0"><code class="language-shell"><span class="token function">sudo</span> systemctl <span class="token builtin class-name">enable</span> guacd</code></pre>
+<pre class="language-shell" tabindex="0"><code class="language-shell"><span class="token function">sudo</span> systemctl start guacd</code></pre>
 <pre class="language-shell" tabindex="0"><code class="language-shell"><span class="token function">sudo</span> systemctl status guacd</code></pre>
 <p>In future steps you're going to need some directories, so make them now.</p>
 <pre class="language-shell" tabindex="0"><code class="language-shell"><span class="token function">sudo</span> <span class="token function">mkdir</span> <span class="token parameter variable">-p</span> /etc/guacamole/<span class="token punctuation">{</span>extensions,lib<span class="token punctuation">}</span></code></pre>
-<br> 
+<br>
 <br>
 <h3 id="installing-the-webapp-frontend">Installing the Webapp/Frontend</h3>
-<p>At the time of this writing, Tomcat10, the default available in Ubuntu 24.04, wouldn't work with Gucamole.  To get Tomcat9 on Ubuntu 24.04, add the repo.</p>
+<p>At the time of this writing, Tomcat10, the default available in Ubuntu 24.04, wouldn't work with Guacamole. To get Tomcat9 on Ubuntu 24.04, add the repo.</p>
 <pre class="language-shell" tabindex="0"><code class="language-shell"><span class="token function">sudo</span> add-apt-repository <span class="token parameter variable">-y</span> <span class="token parameter variable">-s</span> <span class="token string">"deb http://archive.ubuntu.com/ubuntu/ jammy main universe"</span></code></pre>
 <p>Then install Tomcat9.</p>
 <pre class="language-shell" tabindex="0"><code class="language-shell"><span class="token function">sudo</span> <span class="token function">apt</span> update <span class="token operator">&amp;&amp;</span> <span class="token function">sudo</span> <span class="token function">apt</span> <span class="token function">install</span> tomcat9 tomcat9-admin tomcat9-common tomcat9-user <span class="token parameter variable">-y</span></code></pre>
@@ -195,15 +195,15 @@ Dark
 <pre class="language-shell" tabindex="0"><code class="language-shell"><span class="token function">sudo</span> <span class="token function">mv</span> guacamole-1.5.5.war /var/lib/tomcat9/webapps/guacamole.war</code></pre>
 <p>Restart Tomcat9.</p>
 <pre class="language-shell" tabindex="0"><code class="language-shell"><span class="token function">sudo</span> systemctl restart tomcat9 guacd</code></pre>
-<br> 
+<br>
 <br>
 <h3 id="database-for-authentication">Database for Authentication</h3>
-<p>While the Guac docs say the web UI is functional at this point, I wasn't able to login with the default credentials without a database connected up to Guac.  I decided to use MariaDB because it's a drop in for MySQL and easily provisioned on Debian derivatives.</p>
+<p>While the Guac docs say the web UI is functional at this point, I wasn't able to login with the default credentials without a database connected up to Guac. I decided to use MariaDB because it's a drop in for MySQL and easily provisioned on Debian derivatives.</p>
 <p>Install MariaDB.</p>
 <pre class="language-shell" tabindex="0"><code class="language-shell"><span class="token function">sudo</span> <span class="token function">apt</span> <span class="token function">install</span> mariadb-server <span class="token parameter variable">-y</span></code></pre>
-<p>Secure the install.  Make sure to create a root password.</p>
+<p>Secure the install. Make sure to create a root password.</p>
 <pre class="language-shell" tabindex="0"><code class="language-shell"><span class="token function">sudo</span> mysql_secure_installation</code></pre>
-<p>Before you move on to database creation, you'll need some additions for MariaDB.  You'll need a connector provided by MySQL and a Apache-supplied driver to connect MariaDB to the Guacamole web app.</p>
+<p>Before you move on to database creation, you'll need some additions for MariaDB. You'll need a connector provided by MySQL and a Apache-supplied driver to connect MariaDB to the Guacamole web app.</p>
 <p>First download the connector from <a href="https://dev.mysql.com/downloads/connector/j/">this page</a> (select platform <em>independent</em> to find the tar file).</p>
 <pre class="language-shell" tabindex="0"><code class="language-shell"><span class="token function">wget</span> https://dev.mysql.com/get/Downloads/Connector-J/mysql-connector-j-9.3.0.tar.gz <span class="token parameter variable">-O</span> mysql-connector-j-9.3.0.tar.gz</code></pre>
 <p>Then extract the tar file and copy it to the Guac lib config.</p>
@@ -244,14 +244,14 @@ mysql-username: <span class="token operator">&lt;</span>SOME_USER<span class="to
 mysql-password: <span class="token operator">&lt;</span>SOME PASSWORD<span class="token operator">></span></code></pre>
 <p>Reload everything.</p>
 <pre class="language-shell" tabindex="0"><code class="language-shell"><span class="token function">sudo</span> systemctl restart tomcat9 guacd mysql</code></pre>
-<p>The web UI should already be up but now it can accept your credentials.  Check the website at <code>http://&lt;HOST_IP&gt;:8080/guacamole</code> and login with <code>guacadmin:guacadmin</code>.</p>
-<section><div class="grid"><div><p>Once you sign in, you'll face a screen like the following.</p></div><div><img loading="lazy" src="/img/2025-05-01_13-57.png" alt="Guac mainscreen" "=""><p><cite><small>Guac mainscreen</small></cite></p></div></div></section>
+<p>The web UI should already be up but now it can accept your credentials. Check the website at <code>http://&lt;HOST_IP&gt;:8080/guacamole</code> and login with <code>guacadmin:guacadmin</code>.</p>
+<section><div class="grid"><div><p>Once you sign in, you'll face a screen like the following.</p></div><div><img loading="lazy" src="/img/2025-05-01_13-57.png" alt="Guac main screen" "=""><p><cite><small>Guac main screen</small></cite></p></div></div></section>
 <section><div class="grid"><div><p>Head to the upper right corner where there is a drop down for guacadmin and select settings. To change the guacadmin password, create a user, or delete users select the user tab.</p></div><div><img loading="lazy" src="/img/2025-05-01_13-57_1.png" alt="Users tab" "=""><p><cite><small>Users tab</small></cite></p></div></div></section>
 <section><div class="grid"><div><p>Make a new user with all the permissions boxes ticked, sign out and then back in as the new user, and finally delete the guacadmin user (or at minimum change the gaucadmin password).</p></div><div><img loading="lazy" src="/img/2025-05-01_13-58.png" alt="User creation" "=""><p><cite><small>User creation</small></cite></p></div></div></section>
-<br> 
+<br>
 <br>
 <h3 id="installing-tigervnc-on-kali">Installing TigerVNC on Kali</h3>
-<p>Next, you'll install a VNC server called TigerVNC on Kali  which will connect to the Guac server and subsequently relay to your browser.  I used instructions inspired by &quot;We are going to use TigerVNC:&quot; at <a href="https://www.kali.org/docs/general-use/guacamole-kali-in-browser/">this page</a> to create this section and <a href="https://gist.github.com/mixalbl4-127/4f5ab6744be6f98555f3e29f1cfc7050" class="primary">this GitHub gist.</a></p>
+<p>Next, you'll install a VNC server called TigerVNC on Kali which will connect to the Guac server and subsequently relay to your browser. I used instructions inspired by &quot;We are going to use TigerVNC:&quot; at <a href="https://www.kali.org/docs/general-use/guacamole-kali-in-browser/">this page</a> to create this section and <a href="https://gist.github.com/mixalbl4-127/4f5ab6744be6f98555f3e29f1cfc7050" class="primary">this GitHub gist.</a></p>
 <p>On the Kali machine update Kali and get yourself a hot drink, it'll be a minute.</p>
 <pre class="language-shell" tabindex="0"><code class="language-shell"><span class="token function">sudo</span> <span class="token function">apt</span> update <span class="token operator">&amp;&amp;</span> <span class="token function">sudo</span> <span class="token function">apt</span> upgrade <span class="token parameter variable">-y</span></code></pre>
 <p>Install the server.</p>
@@ -259,28 +259,28 @@ mysql-password: <span class="token operator">&lt;</span>SOME PASSWORD<span class
 </code></pre>
 <p>Make a directory in your home called .vnc.</p>
 <pre class="language-shell" tabindex="0"><code class="language-shell"><span class="token function">mkdir</span> <span class="token parameter variable">-p</span> ~/.vnc/ <span class="token operator">&amp;&amp;</span> <span class="token builtin class-name">cd</span> ~/.vnc</code></pre>
-<p>Place a file in it called <code>xstartup</code> with the following content.  This will configure the vnc server.</p>
+<p>Place a file in it called <code>xstartup</code> with the following content. This will configure the vnc server.</p>
 <pre><code>#!/bin/sh
 unset SESSION_MANAGER
 unset DBUS_SESSION_BUS_ADDRESS
 startxfce4
 </code></pre>
-<p>It used to be that the last line of the file above ended in <code>&amp;</code> to background the startx command.  This no longer seems as though it is needed since Ubuntu 22.04.</p>
+<p>It used to be that the last line of the file above ended in <code>&amp;</code> to background the startx command. This no longer is necessary since Ubuntu 22.04.</p>
 <p>Make sure that file is executable.</p>
 <pre class="language-shell" tabindex="0"><code class="language-shell"><span class="token function">chmod</span> +x ~/.vnc/xstartup</code></pre>
-<p>Run the following and pay attention to the output.  Initiating TigerVNC manually in this way will ask you for a password.  Keep that password handy, you'll need it later for the Guac web UI.</p>
+<p>Run the following and pay attention to the output. Initiating TigerVNC manually in this way will ask you for a password. Keep that password handy, you'll need it later for the Guac web UI.</p>
 <pre class="language-shell" tabindex="0"><code class="language-shell">vncserver</code></pre>
-<p>It'll say something like <code>New Xtigervnc server '&lt;SOME_HOSTNAME&gt;:2 (&lt;SOME_USER&gt;)' on port 5902 for display :2.</code>  Take note of the <code>:2</code> portion and port.</p>
+<p>It'll say something like <code>New Xtigervnc server '&lt;SOME_HOSTNAME&gt;:2 (&lt;SOME_USER&gt;)' on port 5902 for display :2.</code> Take note of the <code>:2</code> portion and port.</p>
 <p>Note, if you have trouble with the command above, try setting the XDG_CONFIG_HOME environment variable to <code>/home/&lt;YOUR_USERNAME&gt;/.vnc</code> in your <code>.bashrc</code> (or whatever shell you run) file and run <code>source ~/.bashrc</code>.</p>
-<p>At this point you have two options.  If you just want to get TigerVNC up and running to make sure everything works, then run it manually.  First kill the server from above with <code>vncserver -kill :*</code>.  Then enter the following with the parameter to expose the port externally.</p>
+<p>At this point you have two options. If you just want to get TigerVNC up and running to make sure everything works, then run it manually. First kill the server from above with <code>vncserver -kill :*</code>. Then enter the following with the parameter to expose the port externally.</p>
 <pre><code>vncserver :2 -localhost no
 </code></pre>
 <p>Then you can skip ahead to the Guac connections section.</p>
 <p>If you'd rather ensure that TigerVNC runs each time Kali boots, read on.</p>
 <h4 id="ensuring-tigervnc-starts-at-boot">Ensuring TigerVNC Starts at Boot</h4>
-<p>Next, we'll set up a Service File to start TigerVNC at startup.  Of course you can skip this step if you only plan to occasionally use Guac to connect to Kali, as you can manually start the TigerVNC server over SSH first and then connect through Guac.</p>
+<p>Next, we'll set up a Service File to start TigerVNC at startup. Of course you can skip this step if you only plan to occasionally use Guac to connect to Kali, as you can manually start the TigerVNC server over SSH first and then connect through Guac.</p>
 <p>For this step, I relied on <a href="https://www.digitalocean.com/community/tutorials/how-to-install-and-configure-vnc-on-ubuntu-16-04">this Digital Ocean guide</a>, specifically step 4.</p>
-<p>Create a  Service File at the following location and with the following name <code>/etc/systemd/system/vncserver@.service</code>.  Populate that file with the following, and be sure to change &quot;someuser&quot; with your username.  Also on the line <code>ExecStart</code> modify the geometry varaible for your screen resolution.</p>
+<p>Create a Service File at the following location and with the following name <code>/etc/systemd/system/vncserver@.service</code>. Populate that file with the following, and be sure to change &quot;someuser&quot; with your username. Also on the line <code>ExecStart</code> modify the geometry variable for your screen resolution.</p>
 <pre><code>[Unit]
 Description=Start TigerVNC server at startup
 After=syslog.target network.target
@@ -301,7 +301,7 @@ WantedBy=multi-user.target
 </code></pre>
 <p>Reload the Service Files.</p>
 <pre class="language-shell" tabindex="0"><code class="language-shell"><span class="token function">sudo</span> systemctl daemon-reload</code></pre>
-<p>Now you'll start the service.  You have to add the number you noted from running the <code>vncserver</code> command to the following standard systemctl commands in order to tell the Service File what display number the service should appear over.  Start it using the number from the <code>vncserver</code> command above, e.g.:</p>
+<p>Now you'll start the service. You have to add the number you noted from running the <code>vncserver</code> command to the following standard systemctl commands in order to tell the Service File what display number the service should appear over. Start it using the number from the <code>vncserver</code> command above, e.g.:</p>
 <pre class="language-shell" tabindex="0"><code class="language-shell"><span class="token function">sudo</span> systemctl <span class="token builtin class-name">enable</span> vncserver@2.service</code></pre>
 <p>Make sure any other VNC servers aren't operating.</p>
 <pre class="language-shell" tabindex="0"><code class="language-shell">vncserver <span class="token parameter variable">-kill</span> :*</code></pre>
@@ -314,18 +314,18 @@ WantedBy=multi-user.target
 <p>Finally, verify the service is running properly.</p>
 <pre class="language-shell" tabindex="0"><code class="language-shell"><span class="token function">sudo</span> systemctl status vncserver@2</code></pre>
 <h4 id="troubleshooting-service-file-creation">Troubleshooting Service File Creation</h4>
-<p>I struggled a bit with this section, in part because I ran the <code>vncserver</code> command with sudo at one point prior to setting up the Service File.  That caused a great deal of confusion as the server attempted repeated to find TigerVNC configs in the root directory.</p>
-<p>To remedy, I moved the ~/.vnc, ~/.Xauthority, ~/.Xresources and/or ~/.config/tigervnc files and directories to a backup location (or give them a <code>.bak</code> extension).  Then I uninstalled <code>tigervnc-standalone-server</code> and reinstalled.  Finally, I started over from the <a href="https://christopherbauer.xyz/blog/guac-proxmox-kali/#installing-tigervnc-on-kali" class="primary">section above.</a></p>
-<br> 
+<p>I struggled a bit with this section, in part because I ran the <code>vncserver</code> command with sudo at one point prior to setting up the Service File. That caused a great deal of confusion as the server repeatedly attempted to find the TigerVNC config in the root directory.</p>
+<p>To remedy, I moved the ~/.vnc, ~/.Xauthority, ~/.Xresources and/or ~/.config/tigervnc files and directories to a backup location (or give them a <code>.bak</code> extension). Then I uninstalled <code>tigervnc-standalone-server</code> and reinstalled. Finally, I started over from the <a href="https://christopherbauer.xyz/blog/guac-proxmox-kali/#installing-tigervnc-on-kali" class="primary">section above.</a></p>
+<br>
 <br>
 <h3 id="creating-a-connection-in-guac">Creating a Connection in Guac</h3>
 <p>For this section credit is due to <a href="https://www.kali.org/docs/general-use/guacamole-kali-in-browser/" class="primary">the official Kali docs on Guac.</a></p>
-<section><div class="grid"><div><p>To create a connection to Kali, sign into Guac at the address you used above.   Head to the settings in the dropdown at the upper right, and look for the connections tab.  Clicking on that tab will open a new pane with fields for the connection details.</p></div><div><img loading="lazy" src="/img/2025-05-03_10-52.png" alt="Connections tab" "=""><p><cite><small>Connections tab</small></cite></p></div></div></section>
-<section><div class="grid"><div><p>The most important section is labeled PARAMETERS.  Look for the Network sub-section.  Enter your Kali IP or hostname and the port you noted from above in that section.</p></div><div><img loading="lazy" src="/img/2025-05-03_10-55.png" alt="Connections editing pane" "=""><p><cite><small>Connections editing pane</small></cite></p></div></div></section>
+<section><div class="grid"><div><p>To create a connection to Kali, sign into Guac at the address you used above.   Head to the settings in the drop-down at the upper right, and look for the connections tab.  Clicking on that tab will open a new pane with fields for the connection details.</p></div><div><img loading="lazy" src="/img/2025-05-03_10-52.png" alt="Connections tab" "=""><p><cite><small>Connections tab</small></cite></p></div></div></section>
+<section><div class="grid"><div><p>The most important section is 'PARAMETERS.'  Look for the Network sub-section.  Enter your Kali IP or hostname and the port you noted from above in that section.</p></div><div><img loading="lazy" src="/img/2025-05-03_10-55.png" alt="Connections editing pane" "=""><p><cite><small>Connections editing pane</small></cite></p></div></div></section>
 <section><div class="grid"><div><p>Then for the Authentication sub-section, enter the user in Kali that started the VNC server and the password you created.  Finally, under the Display sub-section go to the line for Color depth and select True color (32-bit).</p></div><div><img loading="lazy" src="/img/2025-05-03_10-44.png" alt="Connections editing pane" "=""><p><cite><small>Connections editing pane</small></cite></p></div></div></section>
-<p>With that, you should be able to connect.  Head back up to the hamburger in the top right and select &quot;Home&quot; from the drop down.  Now you should see a new clickable entry with your title for Kali.  Simply click and you should begin the connection process.  With any luck that will successfully connect and you're in business!</p>
+<p>With that, you should be able to connect. Head back up to the hamburger in the top right and select &quot;Home&quot; from the drop down. Now you should see a new clickable entry with your title for Kali. Simply click and you should begin the connection process. With any luck that will successfully connect and you're in business!</p>
 <h2 id="conclusion">Conclusion</h2>
-<p>Installing Guacamole is a bit of an investment in your time, especially when you consider that Proxmox's SPICE option might work well for you.  For my circumstances however, it was worth it to build and write up this guide if only to build some familiarity with Guacamole.</p>
+<p>Installing Guacamole is a bit of an investment in your time, especially when you consider that Proxmox's SPICE option might work well for you. For my circumstances however, it was worth it to build and write up this guide if only to build some familiarity with Guacamole.</p>
 <p>If you'd like to connect, feel free to reach out on <a href="https://infosec.exchange/@anthro_packets" class="primary">Mastodon</a> .</p>
 
 
