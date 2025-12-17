@@ -8,6 +8,7 @@ tags:
 ---
 
 Content Overview
+
 - {% linkprimary "Introduction", "https://christopherbauer.xyz/blog/graylog-revised/#introduction" %}
 - {% linkprimary "Creating the VM", "https://christopherbauer.xyz/blog/graylog-revised/#creating-the-vm" %}
 - {% linkprimary "Installation & Configuration", "https://christopherbauer.xyz/blog/graylog-revised/#installation-and-configuration" %}
@@ -199,7 +200,7 @@ Install it.
 sudo dpkg -i graylog-6.1-repository_latest.deb
 ```
 
-The repositiories your package manager checks should now include Graylog's repos. Update them.
+The repositories your package manager checks should now include Graylog's repos. Update them.
 
 ```bash
 sudo apt-get update
@@ -231,13 +232,13 @@ Reload the config.
 sudo sysctl -p
 ```
 
-Create a password secret and copy the output to a file editor.  You'll need it for the next step and later as well.
+Create a password secret and copy the output to a file editor. You'll need it for the next step and later as well.
 
 ```bash
 < /dev/urandom tr -dc A-Z-a-z-0-9 | head -c${1:-96};echo;
 ```
 
-Open the config file using vim (you can use nano if you prefer something straighforward). Paste the above into the `password_secret` line, no quotations.
+Open the config file using vim (you can use nano if you prefer something straightforward). Paste the above into the `password_secret` line, no quotations.
 
 ```bash
 sudo vim /etc/graylog/datanode/datanode.conf
@@ -333,4 +334,5 @@ Because this is a role _main.yml_ file, it may seem truncated. To explain, the f
 You'd then run that using Ansible as a role in your playbook.
 
 ### Conclusion
-Admittedly, this is a post with a niche attraction, but nevertheless I hope it may help someone in the future. Should you have any questions, don't hesitate to DM me on {% linkprimary "Mastodon", "https://infosec.exchange/@anthro_packets" %}. 
+
+Admittedly, this is a post with a niche attraction, but nevertheless I hope it may help someone in the future. Should you have any questions, don't hesitate to DM me on {% linkprimary "Mastodon", "https://infosec.exchange/@anthro_packets" %}.
