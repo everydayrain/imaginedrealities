@@ -110,14 +110,14 @@ Dark
 <p><time datetime="2025-01-07">07 January 2025</time></p>
 <p>To make a long story short, I don't want my NAS to be multipurpose for reasons of admin. I only want it to be a backup server, nothing more. So I thought I'd write up a quick primer on installing and configuring VSFTP in a Proxmox LXC container.</p>
 <h3 id="a-progression-to-the-sysadmin-perspective">A Progression to the SysAdmin Perspective</h3>
-<p>I don't think I have more services running than the next home-labatista on the block, but I do have an above average awareness of security and so I'm assiduous about ensuring services are installed correctly, hardened, and everything from OS to apps are upgraded. That means that as the number of services I run grows, I find I'm spending lots of time on admin. It's not that I don't like doing admin, its that I don't like doing lots of admin while being inefficient amidst growing workflows. As the VM and container workflows have multiplied, I've looked to simplify things. While I'm sure automation might help me here, I'm seeking simplicity of a mental sort to start.</p>
+<p>I don't think I have more services running than the next home-labatista on the block, but I do have an above average awareness of security and so I'm assiduous about ensuring services are installed correctly, hardened, and everything from OS to apps are upgraded. That means that as the number of services I run grows, I find I'm spending lots of time on admin. It's not that I don't like doing admin, it's that I don't like doing lots of admin while being inefficient amidst growing workflows. As the VM and container workflows have multiplied, I've looked to simplify things. While I'm sure automation might help me here, I'm seeking simplicity of a mental sort to start.</p>
 <p>After listening to <a href="https://2.5admins.com/2-5-admins-178/">2.5 Admins # 178</a>, I've taken the principle of having critical services running on dedicated hardware and extended it another step. I want non-hypervisor hardware, especially hardware running uncommon OSes such as Synology's Disk Station Manager, to be dedicated to only one service as a rule. If the appliance is designed as a network attached storage device, then let it be a backup server only. Running a slew of Docker containers across a Proxmox host, a Raspberry Pi and who knows what else is too taxing from a management standpoint. That is what Proxmox is for; let the Raspberry Pi run a Meshtastic node alone.</p>
 <p>I can see that I'm privileged to have a NAS appliance and a separate hypervisor, allowing me to separate a backup server from, say, a media server, instead of using the NAS to simultaneously provide multiple services itself. All the same, at a cognitive level, I find it easier to manage many home-lab services when they are segregated according to hardware. Proxmox with its ease of management and easy backups can then handle the multipurpose role.</p>
 <p>Perhaps this is the journey all professional SysAdmins go through, from disorganization and shabby practices when they have a lone VM to keep up, to anticipation, planning, and automation when they manage a small fleet. Okay, yeah, maybe that is just me.</p>
 <h3 id="why-ftp">Why FTP?</h3>
-<p>In part, curiosity.  While working on my OSCP cert, it got to the point were I'd groan anytime I fired up nmap and got a result with &quot;vsftp&quot; in the output.  It was almost never vulnerable.  And exploiting web vulnerabilities through exposed FTP shares came to be a tried and true path for initial webshell foothold.</p>
-<p>It's also partly a workflow preference.  I have PDF Expert on my Ipad, and FTPS has been the only consistently stable protocol I can use to connect to a file server where my PDFs are located.  I tried SMB for a spell, but my IOS seems to hate that protocol and regularly drops the connection. The only work around I could find was to refresh the connection by manually opening the remote share in the file browser.  FTPS by contrast has been hassel-free, so I'm sticking with it for PDF reading on the tablet.</p>
-<p>Of course, I could just use SFTP and skip the work of setting up a dedicated FTP server, but then I wouldn't learn anything.  So, I installed Very Secure File Transfer Protocol Daemon (<a href="https://security.appspot.com/vsftpd.html">vsftpd</a>) to handle file transfers on my LAN, and let my NAS be just about backups.</p>
+<p>In part, curiosity. While working on my OSCP cert, it got to the point where I'd groan anytime I fired up nmap and got a result with &quot;vsftp&quot; in the output. It was almost never vulnerable. And exploiting web vulnerabilities through exposed FTP shares came to be a tried and true path for initial webshell foothold.</p>
+<p>It's also partly a workflow preference. I have PDF Expert on my iPad, and FTPS has been the only consistently stable protocol I can use to connect to a file server where my PDFs are located. I tried SMB for a spell, but my iOS seems to hate that protocol and regularly drops the connection. The only work around I could find was to refresh the connection by manually opening the remote share in the file browser. FTPS by contrast has been hassle-free, so I'm sticking with it for PDF reading on the tablet.</p>
+<p>Of course, I could just use SFTP and skip the work of setting up a dedicated FTP server, but then I wouldn't learn anything. So, I installed Very Secure File Transfer Protocol Daemon (<a href="https://security.appspot.com/vsftpd.html">vsftpd</a>) to handle file transfers on my LAN, and let my NAS be just about backups.</p>
 <h3 id="lxc-container-creation">LXC Container Creation</h3>
 <p>To be forthright, the <a href="https://wiki.archlinux.org/title/Very_Secure_FTP_Daemon">Arch Wiki</a> on vsftpd is concise and accurate if you need another reference. Credit where credit is due, I used that wiki, as well as the <a href="https://wiki.debian.org/vsftpd">Debian wiki</a> and <a href="https://help.ubuntu.com/community/vsftpd">Ubuntu community page on vsftpd</a> for the steps below.</p>
 <p>First, <a href="https://pve.proxmox.com/wiki/Linux_Container">create</a> an LXC container. This should be straightforward, and it's out of scope to cover the steps to inception here. Broadly speaking, I prefer using Ubuntu LTS container templates so I don't get caught out in a year or two when some breaking change requires that I upgrade the distro before I can upgrade the software.</p>
@@ -130,8 +130,8 @@ vsftpd: ALL
 # IP address range
 vsftpd: 10.0.0.0/255.255.255.0
 </code></pre>
-<p>The configuration of vsftp takes place through a file, <code>/etc/vsftpd.conf</code>. Below are the options I selected. Your requirements may differ, so please refer to the <a href="https://wiki.archlinux.org/title/Very_Secure_FTP_Daemon">Arch Wiki</a> on vsftpd for derivations.</p>
-<p>This config assumes that you've assigned a system user as designated to access FTP, perhaps using <code>adduser SOME_NEW_USERNAME</code>.  If at any point you can't find the entries below, simply add them to <code>vsftpd.conf</code>.</p>
+<p>The configuration of vsftp takes place through a file, <code>/etc/vsftpd.conf</code>. Below are the options I selected. Your requirements may differ, so please refer to the <a href="https://wiki.archlinux.org/title/Very_Secure_FTP_Daemon">Arch Wiki</a> on vsftpd for deviations.</p>
+<p>This config assumes that you've assigned a system user as designated to access FTP, perhaps using <code>adduser SOME_NEW_USERNAME</code>. If at any point you can't find the entries below, simply add them to <code>vsftpd.conf</code>.</p>
 <p>Disallow anonymous login:</p>
 <pre><code>anonymous_enable=NO
 </code></pre>
@@ -139,7 +139,7 @@ vsftpd: 10.0.0.0/255.255.255.0
 <pre><code>write_enable=YES
 </code></pre>
 <p>Chroot users by default, ensuring they can't access whole file system:</p>
-<pre><code>chroot_local_user=YES 
+<pre><code>chroot_local_user=YES
 </code></pre>
 <pre><code>chroot_list_enable=NO
 </code></pre>
@@ -168,7 +168,7 @@ vsftpd: 10.0.0.0/255.255.255.0
 # if you accept anonymous connections, you may want to enable this setting
 #allow_anon_ssl=NO
 
-# by default all non anonymous logins and forced to use SSL to send and receive password and data, set to NO to allow non secure connections
+# by default all non anonymous logins are forced to use SSL to send and receive password and data, set to NO to allow non secure connections
 force_local_logins_ssl=NO
 force_local_data_ssl=NO
 
@@ -187,7 +187,7 @@ rsa_private_key_file=/etc/ssl/certs/vsftpd.pem
 # this is more secure but is not supported by many FTP clients, set to NO for better compatibility
 require_ssl_reuse=NO
 </code></pre>
-<p>Then create a folder under the user you've designated for ftp, give it <code>r+w</code> permissions and make sure its owned by that user.  Then add the following to the  <code>/etc/vsftpd.conf</code> file.</p>
+<p>Then create a folder under the user you've designated for ftp, give it <code>r+w</code> permissions and make sure its owned by that user.</p>
 <p>That should be it. You can check the status is <em>enabled</em> and <em>active</em> by running:</p>
 <pre><code>systemctl status vsftpd.service
 </code></pre>
