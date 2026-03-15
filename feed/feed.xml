@@ -5,11 +5,52 @@
   <subtitle>Cyber Security and Stray Thoughts.</subtitle>
   <link href="https://christopherbauer.xyz/feed/feed.xml" rel="self" />
   <link href="https://christopherbauer.xyz/" />
-  <updated>2025-05-02T00:00:00Z</updated>
+  <updated>2026-03-15T20:06:32Z</updated>
   <id>https://christopherbauer.xyz/</id>
   <author>
     <name>Christopher Bauer</name>
   </author>
+  <entry>
+    <title>Revisiting Docker Management and Troubleshooting</title>
+    <link href="https://christopherbauer.xyz/blog/docker-trouble2/" />
+    <updated>2026-03-15T20:06:32Z</updated>
+    <id>https://christopherbauer.xyz/blog/docker-trouble2/</id>
+    <content type="html">&lt;img src=&quot;https://christopherbauer.xyz/img/dockhandgeneric.png&quot; loading=&quot;lazy&quot; title=&quot;&quot;&gt;
+&lt;br&gt; &lt;br&gt;
+&lt;p&gt;In this post I revisit the topic of homelab Docker container management and troubleshooting. I introduce a few new to me Web User Interface-based (WUI) tools. I&#39;ll dig into why I&#39;ve moved away from Terminal User Interface (TUI) tools towards the more complex architecture of an agent-based management console with Dockhand.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Overview in Brief&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&quot;https://christopherbauer.xyz/blog/docker-trouble2/%3Chttps:/christopherbauer.xyz/blog/docker-trouble2/#why-wuis%3E#why-wuis%3E&quot; class=&quot;primary&quot;&gt;Why WUIs&lt;/a&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&quot;https://christopherbauer.xyz/blog/docker-trouble2/%3Chttps:/christopherbauer.xyz/blog/docker-trouble2/#dozzle%3E#dozzle%3E&quot; class=&quot;primary&quot;&gt;Dozzle&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;https://christopherbauer.xyz/blog/docker-trouble2/%3Chttps:/christopherbauer.xyz/blog/docker-trouble2/#arcane%3E#arcane%3E&quot; class=&quot;primary&quot;&gt;Arcane&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;https://christopherbauer.xyz/blog/docker-trouble2/%3Chttps:/christopherbauer.xyz/blog/docker-trouble2/#dockhand%3E#dockhand%3E&quot; class=&quot;primary&quot;&gt;Dockhand&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;https://christopherbauer.xyz/blog/docker-trouble2/%3Chttps:/christopherbauer.xyz/blog/docker-trouble2/#conclusion%3E#conclusion%3E&quot; class=&quot;primary&quot;&gt;Conclusion&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&quot;why-wuis&quot;&gt;Why WUIs&lt;/h2&gt;
+&lt;p&gt;In a &lt;a href=&quot;https://christopherbauer.xyz/blog/docker-trouble/&quot;&gt;previous post&lt;/a&gt; I lamented the state of tools for troubleshooting Docker containers. It seems that all I needed to do to solve my problem was broaden my horizons from TUI-based to WUI-based tools! In the WUI space we&#39;re spoiled for choice. Many are new to me, though according to &lt;a href=&quot;https://christopherbauer.xyz/blog/docker-trouble2/%3Chttps:/selfh.st/post/2025-favorite-new-apps/%3E&quot; class=&quot;primary&quot;&gt;Ethan Sholly&lt;/a&gt;  Arcane came out in 2025, so some are new to many as well. Sholly points out elsewhere that there has been an explosion of these kinds of apps recently, with a lot of overlap in capabilities. I&#39;ve tried a few, but I am not making any claims about this post being exhaustive.&lt;/p&gt;
+&lt;p&gt;Why move away from TUIs? The simple answer is that I have a growing homelab container environment. I tended to favor the simplicity of TUIs over an orchestration console when I had a half dozen containers because I found it easier to SSH directly into a single server and start up a TUI. I favored &lt;a href=&quot;https://github.com/mrjackwills/oxker&quot;&gt;Oxker&lt;/a&gt;, for no other reason than the spatial layout made sense to me, and it was more organized than using Docker native commands.&lt;/p&gt;
+&lt;p&gt;Now that my containers have grown beyond a dozen, and they exist on multiple different machines, the complexity of command-line (CLI) operations has increased my cognitive load. When I began looking into other Docker container management options, the WUI came as a breath of fresh air in managing this distributed environment.&lt;/p&gt;
+&lt;p&gt;Below I list out a few of these options in the order in which I encountered them. They all offered &amp;quot;free as in beer&amp;quot; versions at the time of this writing. In keeping with the rest of my home lab, I self-hosted these Docker containers using compose files.&lt;/p&gt;
+&lt;h2 id=&quot;dozzle&quot;&gt;Dozzle&lt;/h2&gt;
+&lt;img src=&quot;https://christopherbauer.xyz/img/dozzle.png&quot; loading=&quot;lazy&quot; title=&quot;&quot;&gt;
+&lt;br&gt;&lt;br&gt;
+&lt;p&gt;I was initially drawn to &lt;a href=&quot;https://dozzle.dev/&quot; class=&quot;primary&quot;&gt;Dozzle&lt;/a&gt;  because it seemed like a lightweight WUI and it offered insight into each container&#39;s logs. This is nice over a TUI since I was able to quickly switch between container logs. Previously, using Oxker, I could switch between logs without a mouse but the interface was slow and a bit cumbersome.&lt;/p&gt;
+&lt;p&gt;Generally, I&#39;m not crazy about the way Dozzle organizes containers into groups and loose containers in the left-hand pane. Grouping like containers together seems like a peevish thing to criticize, but when I&#39;m troubleshooting I tend to want to see all containers at a glance, specifically in alphabetical order please.  Of course, you can simply unfold the individual containers from the grouping. I acknowledge this critique is a bit nitpicky, but while Dozzle was a good first step into WUIs, it just wasn&#39;t for me.&lt;/p&gt;
+&lt;p&gt;In my research I only got as far as how to run a single Dozzle instance for a single Docker host.&lt;/p&gt;
+&lt;h2 id=&quot;arcane&quot;&gt;Arcane&lt;/h2&gt;
+&lt;p&gt;While I was initially interested in &lt;a href=&quot;https://getarcane.app&quot; class=&quot;primary&quot;&gt;Arcane&lt;/a&gt;  for its increased features and slick dashboards, I became disenchanted with it in short order. In particular, what I liked about Arcane was that it offered more detail on the host&#39;s resource usage than Dozzle. Arcane had deeper insights into volumes and images that Dozzle lacked as well. However, despite those advantages, I found something a tad clunky about the way that Arcane displayed information and integrated different displays into a workflow. I don&#39;t have detailed criticism here beyond the UI not sitting well with me. I quickly switched from Arcane to Dockhand, so I&#39;ll leave it at that.&lt;/p&gt;
+&lt;h2 id=&quot;dockhand&quot;&gt;Dockhand&lt;/h2&gt;
+&lt;p&gt;I like two things about &lt;a href=&quot;https://dockhand.pro/&quot; class=&quot;primary&quot;&gt;Dockhand&lt;/a&gt; . First, the log search within any container and, second, the Hawser-agent that can provide state and control over multiple Docker server hosts. The former feature alone makes Dockhand stand out against the other two apps in this post. While having access to logs makes WUIs nice, having a search on logs facilitates finding errors instead of manually sorting through them. That alone is enough to push Dockhand ahead of the pack.&lt;/p&gt;
+&lt;p&gt;With the Hawser-agent feature, Dockhand also moves into a higher class by controlling multiple containers on different machines. This is nice if you are looking for a single-point of management. Combining these two features, I can have relatively quick and painless access to logs for any Docker server, whether in my homelab or on a VPS, and isolate errors quickly from one space.  I haven&#39;t found the agents to be resource-heavy and they aren&#39;t difficult to install as they have their own Docker Compose files.&lt;/p&gt;
+&lt;p&gt;Among the other features I use regularly is an automatic check for container updates that has changed up my approach to patch management on containers. Dockhand has several other features, including Git management and shell access to each container, but I have yet to explore these.&lt;/p&gt;
+&lt;p&gt;Finally, Dockhand has a few well-known themes to choose from, like Gruvbox and Tokyo Night. So you don&#39;t have to stick with the default white if it&#39;s not for you.&lt;/p&gt;
+&lt;h2 id=&quot;conclusion&quot;&gt;Conclusion&lt;/h2&gt;
+&lt;p&gt;As my homelab has evolved, I can count the transition to WUIs as one of the surprise developments. I never thought I&#39;d prefer a WUI over a TUI, to say nothing of an agent-based setup.  However, I can safely say I&#39;ve transitioned to these more complex WUI options. I&#39;m currently pretty happy with Dockhand and plan to stick with it for a while. If you need a lightweight WUI, I can recommend Dozzle. Arcane represents for me a purgatory position of not quite working at the level of a console. That said, if Dockhand is too feature-rich for you or you simply don&#39;t like the layout, you might give Arcane a try.&lt;/p&gt;
+</content>
+  </entry>
   <entry>
     <title>Addressing Kali Crashes - Guacamole for Remote Desktop with Proxmox VMs</title>
     <link href="https://christopherbauer.xyz/blog/guac-proxmox-kali/" />
@@ -776,128 +817,6 @@ require_ssl_reuse=NO
 &lt;/code&gt;&lt;/pre&gt;
 &lt;h2 id=&quot;moving-forward&quot;&gt;Moving Forward&lt;/h2&gt;
 &lt;p&gt;If successful, from there your options should open up a bit to lateral movement, or obtaining hashes among other possibilities.&lt;/p&gt;
-</content>
-  </entry>
-  <entry>
-    <title>Installing Game of Active Directory on Proxmox: Part 6 - OpenVPN</title>
-    <link href="https://christopherbauer.xyz/blog/2024-11-23-goad-vpn/" />
-    <updated>2024-11-23T00:00:00Z</updated>
-    <id>https://christopherbauer.xyz/blog/2024-11-23-goad-vpn/</id>
-    <content type="html">&lt;p&gt;This is part 6 of my series on &lt;a href=&quot;https://github.com/Orange-Cyberdefense/GOAD/tree/main&quot;&gt;Orange Cyberdefense&#39;s&lt;/a&gt; Game of Active Directory (GOAD) on Proxmox VE. In the &lt;a href=&quot;https://christopherbauer.xyz/blog/2024-11-17-goad-ansible&quot;&gt;fifth installment&lt;/a&gt; I covered how to use Ansible to configure the final domain layout and individual Windows VMs. In this post we&#39;ll setup the VPN server on pfSense to simulate an assumed breach.&lt;/p&gt;
-&lt;p&gt;As I mentioned before, I&#39;m deeply indebted to Mayfly277&#39;s &lt;a href=&quot;https://mayfly277.github.io/posts/GOAD-on-proxmox-part1-install/?ref=benheater.com&quot;&gt;canonical guide&lt;/a&gt;, and this post follows Mayfly277&#39;s work closely to provide readers with a resource to be used as a standalone or as a supplement.&lt;/p&gt;
-&lt;p&gt;Should you need more orientation to the context of this series, or on my rationale for creating it, see &lt;a href=&quot;https://christopherbauer.xyz/blog/2024-11-08-GOAD-networking&quot;&gt;first post&lt;/a&gt; in this series.&lt;/p&gt;
-&lt;p&gt;Mayfly277&#39;s instructions for this VPN section left me scratching my head at various points. I found two steps where my setup would fail if I followed his instructions on my machine. I&#39;ll make note of those deviations in what follows.&lt;/p&gt;
-&lt;h2 id=&quot;pfsense-and-openvpn&quot;&gt;pfSense &amp;amp; OpenVPN&lt;/h2&gt;
-&lt;h3 id=&quot;creating-the-ca&quot;&gt;Creating the CA&lt;/h3&gt;
-&lt;p&gt;One note before we start, Mayfly277&#39;s &lt;a href=&quot;https://mayfly277.github.io/posts/GOAD-on-proxmox-part1-install/?ref=benheater.com&quot;&gt;guide&lt;/a&gt; has some helpful graphics on his screenshots to draw your eye directly to what needs modifying. Should you get confused about what needs modifying in the following steps, head over there and you should be able to sort it out quickly.&lt;/p&gt;
-&lt;p&gt;The first step involves creating a certificate authority to issue a certificate. Go to the system menu and select the Certificates option.&lt;/p&gt;
-&lt;div class=&quot;grid&quot;&gt;&lt;div&gt;&lt;img src=&quot;https://christopherbauer.xyz/img/2024-11-17_13-23_1.png&quot; loading=&quot;lazy&quot; title=&quot;&quot;&gt;&lt;/div&gt;&lt;div&gt;&lt;/div&gt;&lt;/div&gt;
-&lt;div class=&quot;grid&quot;&gt;&lt;div&gt;&lt;img src=&quot;https://christopherbauer.xyz/img/2024-11-17_13-23.png&quot; loading=&quot;lazy&quot; title=&quot;&quot;&gt;&lt;/div&gt;&lt;div&gt;&lt;/div&gt;&lt;/div&gt;
-&lt;p&gt;Under the Authorities tab click the green Add button at the bottom, and it&#39;ll take to to the following page where you&#39;ll give a descriptive name and a common name. I&#39;ve used VLAN 30 (this is according to my &lt;a href=&quot;https://christopherbauer.xyz/blog/2024-11-08-GOAD-networking&quot;&gt;unique arrangement&lt;/a&gt;, if you followed Mayfly277&#39;s instructions you&#39;d use 10).&lt;/p&gt;
-&lt;div class=&quot;grid&quot;&gt;&lt;div&gt;&lt;img src=&quot;https://christopherbauer.xyz/img/2024-11-17_13-24.png&quot; loading=&quot;lazy&quot; title=&quot;&quot;&gt;&lt;/div&gt;&lt;div&gt;&lt;/div&gt;&lt;/div&gt;
-&lt;p&gt;Click save and you should have something like this:&lt;/p&gt;
-&lt;div class=&quot;grid&quot;&gt;&lt;div&gt;&lt;img src=&quot;https://christopherbauer.xyz/img/2024-11-17_13-25.png&quot; loading=&quot;lazy&quot; title=&quot;&quot;&gt;&lt;/div&gt;&lt;div&gt;&lt;/div&gt;&lt;/div&gt;
-&lt;h3 id=&quot;create-the-certificate-server&quot;&gt;Create the Certificate Server&lt;/h3&gt;
-&lt;p&gt;Click the Certificates tab, and click the green Add button at the bottom. That&#39;ll bring up the new certificate page where you&#39;ll add:&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;Add a decriptive name&lt;/li&gt;
-&lt;li&gt;Select the CA you created&lt;/li&gt;
-&lt;li&gt;Set lifetime to 3650&lt;/li&gt;
-&lt;li&gt;Add a common name&lt;/li&gt;
-&lt;li&gt;Select the server certificate type&lt;/li&gt;
-&lt;/ul&gt;
-&lt;p&gt;Then save.&lt;/p&gt;
-&lt;div class=&quot;grid&quot;&gt;&lt;div&gt;&lt;img src=&quot;https://christopherbauer.xyz/img/2024-11-17_13-25_1.png&quot; loading=&quot;lazy&quot; title=&quot;&quot;&gt;&lt;/div&gt;&lt;div&gt;&lt;/div&gt;&lt;/div&gt;
-&lt;div class=&quot;grid&quot;&gt;&lt;div&gt;&lt;img src=&quot;https://christopherbauer.xyz/img/2024-11-17_13-27.png&quot; loading=&quot;lazy&quot; title=&quot;&quot;&gt;&lt;/div&gt;&lt;div&gt;&lt;/div&gt;&lt;/div&gt;
-&lt;div class=&quot;grid&quot;&gt;&lt;div&gt;&lt;img src=&quot;https://christopherbauer.xyz/img/2024-11-17_13-27_1.png&quot; loading=&quot;lazy&quot; title=&quot;&quot;&gt;&lt;/div&gt;&lt;div&gt;&lt;/div&gt;&lt;/div&gt;
-&lt;p&gt;Once you save the Certificates page will look like this:&lt;/p&gt;
-&lt;div class=&quot;grid&quot;&gt;&lt;div&gt;&lt;img src=&quot;https://christopherbauer.xyz/img/2024-11-17_13-28.png&quot; loading=&quot;lazy&quot; title=&quot;&quot;&gt;&lt;/div&gt;&lt;div&gt;&lt;/div&gt;&lt;/div&gt;
-&lt;h3 id=&quot;create-a-vpn-user&quot;&gt;Create a VPN User&lt;/h3&gt;
-&lt;p&gt;Now we&#39;ll create a local user who can access the VPN. Go to the System menu and select User Manager.&lt;/p&gt;
-&lt;div class=&quot;grid&quot;&gt;&lt;div&gt;&lt;img src=&quot;https://christopherbauer.xyz/img/2024-11-17_13-28_1.png&quot; loading=&quot;lazy&quot; title=&quot;&quot;&gt;&lt;/div&gt;&lt;div&gt;&lt;/div&gt;&lt;/div&gt;
-&lt;p&gt;Under the Users tab, select the green Add button to create a new user.&lt;/p&gt;
-&lt;div class=&quot;grid&quot;&gt;&lt;div&gt;&lt;img src=&quot;https://christopherbauer.xyz/img/2024-11-17_13-28_2.png&quot; loading=&quot;lazy&quot; title=&quot;&quot;&gt;&lt;/div&gt;&lt;div&gt;&lt;/div&gt;&lt;/div&gt;
-&lt;p&gt;Select a username and password, a descriptive name for the user certificate and select the CA you created.&lt;/p&gt;
-&lt;div class=&quot;grid&quot;&gt;&lt;div&gt;&lt;img src=&quot;https://christopherbauer.xyz/img/2024-11-17_13-30.png&quot; loading=&quot;lazy&quot; title=&quot;&quot;&gt;&lt;/div&gt;&lt;div&gt;&lt;/div&gt;&lt;/div&gt;
-&lt;p&gt;Once you hit save the user page will look like this:&lt;/p&gt;
-&lt;div class=&quot;grid&quot;&gt;&lt;div&gt;&lt;img src=&quot;https://christopherbauer.xyz/img/2024-11-17_13-31.png&quot; loading=&quot;lazy&quot; title=&quot;&quot;&gt;&lt;/div&gt;&lt;div&gt;&lt;/div&gt;&lt;/div&gt;
-&lt;h3 id=&quot;create-the-open-vpn-service&quot;&gt;Create the Open VPN Service&lt;/h3&gt;
-&lt;p&gt;Now we&#39;ll create the service operating on the server. Go to the VPN menu and select OpenVPN.&lt;/p&gt;
-&lt;div class=&quot;grid&quot;&gt;&lt;div&gt;&lt;img src=&quot;https://christopherbauer.xyz/img/2024-11-17_13-31_1.png&quot; loading=&quot;lazy&quot; title=&quot;&quot;&gt;&lt;/div&gt;&lt;div&gt;&lt;/div&gt;&lt;/div&gt;
-&lt;p&gt;Under the Servers tab, click on the Green add button. You&#39;ll make several modifications on this page. The first set are:&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;Change the description&lt;/li&gt;
-&lt;li&gt;Change Server mode to &amp;quot;Remote Access (SSL/TLS + User Auth)&amp;quot;&lt;/li&gt;
-&lt;li&gt;Enter &amp;quot;Local Database&amp;quot; into the Backend for authentication field&lt;/li&gt;
-&lt;li&gt;Change the local port to 2137&lt;div class=&quot;grid&quot;&gt;&lt;div&gt;&lt;img src=&quot;https://christopherbauer.xyz/img/2024-11-17_13-32.png&quot; loading=&quot;lazy&quot; title=&quot;&quot;&gt;&lt;/div&gt;&lt;div&gt;&lt;/div&gt;&lt;/div&gt;
-&lt;/li&gt;
-&lt;/ul&gt;
-&lt;p&gt;Modifications continued:&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;Change Peer Certificate Authority to the CA you created&lt;/li&gt;
-&lt;li&gt;Change Server certificate to the certificate you created&lt;div class=&quot;grid&quot;&gt;&lt;div&gt;&lt;img src=&quot;https://christopherbauer.xyz/img/2024-11-17_13-33.png&quot; loading=&quot;lazy&quot; title=&quot;&quot;&gt;&lt;/div&gt;&lt;div&gt;&lt;/div&gt;&lt;/div&gt;
-&lt;/li&gt;
-&lt;/ul&gt;
-&lt;p&gt;Modifications continued:&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;Change IPv4 Tunnel Network to 10.10.10.0/24&lt;/li&gt;
-&lt;li&gt;Change IPv4 Local network to 192.168.30.0/24&lt;/li&gt;
-&lt;li&gt;Change concurent connections to 10&lt;div class=&quot;grid&quot;&gt;&lt;div&gt;&lt;img src=&quot;https://christopherbauer.xyz/img/2024-11-17_13-34.png&quot; loading=&quot;lazy&quot; title=&quot;&quot;&gt;&lt;/div&gt;&lt;div&gt;&lt;/div&gt;&lt;/div&gt;
-&lt;/li&gt;
-&lt;/ul&gt;
-&lt;p&gt;Modifications continued:&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;Add the network configuration in the Topology dropdown to &amp;quot;net30 -- Isolated /30 network per client&amp;quot;&lt;div class=&quot;grid&quot;&gt;&lt;div&gt;&lt;img src=&quot;https://christopherbauer.xyz/img/2024-11-17_13-35.png&quot; loading=&quot;lazy&quot; title=&quot;&quot;&gt;&lt;/div&gt;&lt;div&gt;&lt;/div&gt;&lt;/div&gt;
-&lt;/li&gt;
-&lt;/ul&gt;
-&lt;p&gt;Finally, make sure:&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;DNS Server Enabled is checked&lt;/li&gt;
-&lt;li&gt;DNS server 1 reads 192.168.30.1 (this is according to my &lt;a href=&quot;https://christopherbauer.xyz/blog/2024-11-08-GOAD-networking&quot;&gt;unique arrangement&lt;/a&gt;, if you followed Mayfly277&#39;s instructions you&#39;d use 10)&lt;/li&gt;
-&lt;li&gt;That the Custom options field under Advanced Configruation reads &amp;quot;auth-nocache&amp;quot;&lt;/li&gt;
-&lt;/ul&gt;
-&lt;div class=&quot;grid&quot;&gt;&lt;div&gt;&lt;img src=&quot;https://christopherbauer.xyz/img/2024-11-17_13-36.png&quot; loading=&quot;lazy&quot; title=&quot;&quot;&gt;&lt;/div&gt;&lt;div&gt;&lt;/div&gt;&lt;/div&gt;
-&lt;div class=&quot;grid&quot;&gt;&lt;div&gt;&lt;img src=&quot;https://christopherbauer.xyz/img/2024-11-17_13-36_1.png&quot; loading=&quot;lazy&quot; title=&quot;&quot;&gt;&lt;/div&gt;&lt;div&gt;&lt;/div&gt;&lt;/div&gt;
-&lt;h3 id=&quot;openvpn-client-export-package&quot;&gt;OpenVPN Client Export Package&lt;/h3&gt;
-&lt;p&gt;Now we&#39;ll search for and install the OpenVPN package for Client Export that&#39;ll add a new tab to the OpenVPN pages. Go to System and then Package Manager.&lt;/p&gt;
-&lt;div class=&quot;grid&quot;&gt;&lt;div&gt;&lt;img src=&quot;https://christopherbauer.xyz/img/2024-11-17_13-37.png&quot; loading=&quot;lazy&quot; title=&quot;&quot;&gt;&lt;/div&gt;&lt;div&gt;&lt;/div&gt;&lt;/div&gt;
-&lt;p&gt;Enter &amp;quot;client-export&amp;quot; into the search term and click the green install button on the entry named &amp;quot;openvpn-client-export.&amp;quot;&lt;/p&gt;
-&lt;div class=&quot;grid&quot;&gt;&lt;div&gt;&lt;img src=&quot;https://christopherbauer.xyz/img/2024-11-17_13-37_1.png&quot; loading=&quot;lazy&quot; title=&quot;&quot;&gt;&lt;/div&gt;&lt;div&gt;&lt;/div&gt;&lt;/div&gt;
-&lt;div class=&quot;grid&quot;&gt;&lt;div&gt;&lt;img src=&quot;https://christopherbauer.xyz/img/2024-11-17_13-37_2.png&quot; loading=&quot;lazy&quot; title=&quot;&quot;&gt;&lt;/div&gt;&lt;div&gt;&lt;/div&gt;&lt;/div&gt;
-&lt;p&gt;Next click the client export tab.&lt;/p&gt;
-&lt;div class=&quot;grid&quot;&gt;&lt;div&gt;&lt;img src=&quot;https://christopherbauer.xyz/img/2024-11-17_13-38.png&quot; loading=&quot;lazy&quot; title=&quot;&quot;&gt;&lt;/div&gt;&lt;div&gt;&lt;/div&gt;&lt;/div&gt;
-&lt;p&gt;That&#39;ll bring up a new page where we&#39;ll create the VPN certificate for export.&lt;/p&gt;
-&lt;div class=&quot;grid&quot;&gt;&lt;div&gt;&lt;img src=&quot;https://christopherbauer.xyz/img/2024-11-17_13-47.png&quot; loading=&quot;lazy&quot; title=&quot;&quot;&gt;&lt;/div&gt;&lt;div&gt;&lt;/div&gt;&lt;/div&gt;
-&lt;p&gt;This section of Mayfly277&#39;s guide was not clear on configuring the client export step. When mayfly277 says change the Host Name Resolution to &amp;quot;Other&amp;quot; in the exporting the client certificate step, there is a blurred image. In the context of these posts, where we&#39;re installing GOAD on a bare-metal instance of Proxmox with an existing true LAN, so we&#39;ll use &lt;em&gt;the IP of the Proxmox host&lt;/em&gt; for &amp;quot;Host Name.&amp;quot;&lt;/p&gt;
-&lt;p&gt;Once you&#39;ve done that, scoll to the bottom section OpenVPN clients and click under the Export column &amp;quot;Inline Configurations - Most Clients.&amp;quot; Download that certificate to your Kali/attack machine.&lt;/p&gt;
-&lt;h3 id=&quot;enable-the-ovpns1-interface&quot;&gt;Enable the ovpns1 Interface&lt;/h3&gt;
-&lt;p&gt;At this point there seemed to be something missing from Mayfly277&#39;s instructions. I eventually pieced together that I needed to enable the goadvpn interface with the help of &lt;a href=&quot;https://koller.ninja/proxmox-goad-lab&quot;&gt;this blog&lt;/a&gt;.&lt;/p&gt;
-&lt;p&gt;Head to the Interfaces menu and select assignments. There should now be an entry there called &amp;quot;goadvpn,&amp;quot; click on that blue name/link on the left side. That&#39;ll open up its page and make sure the Enable Interface box is checked, then change the description and click the green Apply Changes box that comes up.&lt;/p&gt;
-&lt;div class=&quot;grid&quot;&gt;&lt;div&gt;&lt;img src=&quot;https://christopherbauer.xyz/img/2024-11-17_14-18.png&quot; loading=&quot;lazy&quot; title=&quot;&quot;&gt;&lt;/div&gt;&lt;div&gt;&lt;/div&gt;&lt;/div&gt;
-Your interface assignments will then look something like this:
-&lt;div class=&quot;grid&quot;&gt;&lt;div&gt;&lt;img src=&quot;https://christopherbauer.xyz/img/2024-11-17_14-18_1.png&quot; loading=&quot;lazy&quot; title=&quot;&quot;&gt;&lt;/div&gt;&lt;div&gt;&lt;/div&gt;&lt;/div&gt;
-&lt;p&gt;You&#39;ll want to enable this interface before you get to the &amp;quot;Configure Firewall&amp;quot; steps.&lt;/p&gt;
-&lt;h3 id=&quot;firewall-rules-review&quot;&gt;Firewall Rules Review&lt;/h3&gt;
-&lt;p&gt;Honestly, the most challanging part of setting up GOAD was configuring the firewall rules, so take this review of my rules with a grain of salt. These work for me, but they took quite a bit of tinkering. I&#39;m not an expert at firewall rules, so if you spot an error, please let me know by direct messaging me on Mastodon.&lt;/p&gt;
-&lt;p&gt;The WAN rules:&lt;/p&gt;
-&lt;div class=&quot;grid&quot;&gt;&lt;div&gt;&lt;img src=&quot;https://christopherbauer.xyz/img/2024-11-17_14-03.png&quot; loading=&quot;lazy&quot; title=&quot;&quot;&gt;&lt;/div&gt;&lt;div&gt;&lt;/div&gt;&lt;/div&gt;
-&lt;p&gt;The LAN rules:&lt;/p&gt;
-&lt;div class=&quot;grid&quot;&gt;&lt;div&gt;&lt;img src=&quot;https://christopherbauer.xyz/img/2024-11-23_10-18.png&quot; loading=&quot;lazy&quot; title=&quot;&quot;&gt;&lt;/div&gt;&lt;div&gt;&lt;/div&gt;&lt;/div&gt;
-&lt;p&gt;The VLAN rules:&lt;/p&gt;
-&lt;div class=&quot;grid&quot;&gt;&lt;div&gt;&lt;img src=&quot;https://christopherbauer.xyz/img/2024-11-17_14-24.png&quot; loading=&quot;lazy&quot; title=&quot;&quot;&gt;&lt;/div&gt;&lt;div&gt;&lt;/div&gt;&lt;/div&gt;
-&lt;p&gt;The VPN rules:&lt;/p&gt;
-&lt;div class=&quot;grid&quot;&gt;&lt;div&gt;&lt;img src=&quot;https://christopherbauer.xyz/img/2024-11-17_14-37.png&quot; loading=&quot;lazy&quot; title=&quot;&quot;&gt;&lt;/div&gt;&lt;div&gt;&lt;/div&gt;&lt;/div&gt;
-&lt;p&gt;&lt;em&gt;Post-series edit:&lt;/em&gt; After writing up this series up and exploring on my own, I discovered that VLAN machines couldn&#39;t access the internet.  As a consquence, I couldn&#39;t make them call on my server to download payloads.  I looked into it, and as mentioned in &lt;a href=&quot;https://github.com/Orange-Cyberdefense/GOAD/issues/177#issuecomment-1927681503&quot;&gt;this github issue&lt;/a&gt;, I think a rule is missing from the VLAN firewall.  To remedy the problem, I tried a number of targeted rules that essentially reversed the OVPN rule, to no effect. As a short-term workaround, I created an allow any any rule.  My VLAN rules are now kind of a mess, see below.&lt;/p&gt;
-&lt;div class=&quot;grid&quot;&gt;&lt;div&gt;&lt;img src=&quot;https://christopherbauer.xyz/img/2024-12-04_13-38.png&quot; loading=&quot;lazy&quot; title=&quot;&quot;&gt;&lt;/div&gt;&lt;div&gt;&lt;/div&gt;&lt;/div&gt;
-&lt;h2 id=&quot;confirming-vpn-access-to-the-domain&quot;&gt;Confirming VPN Access to the Domain&lt;/h2&gt;
-&lt;p&gt;Now use &lt;code&gt;sudo openvpn &amp;lt;YOUR_CERTIFICATE&amp;gt;&lt;/code&gt; to connect, and it&#39;ll prompt you for the user and password you created. Once you do that, it should connect successfully.&lt;/p&gt;
-&lt;p&gt;To confirm you can reach the VLAN from your attacking machine, use NetExec to do a simple SMB sweep without a domain:&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;nxc smb 192.168.&amp;lt;YOUR_VLAN&amp;gt;.&amp;lt;HERE&amp;gt;
-&lt;/code&gt;&lt;/pre&gt;
-&lt;div class=&quot;grid&quot;&gt;&lt;div&gt;&lt;img src=&quot;https://christopherbauer.xyz/img/2024-11-23_10-09.png&quot; loading=&quot;lazy&quot; title=&quot;&quot;&gt;&lt;/div&gt;&lt;div&gt;&lt;/div&gt;&lt;/div&gt;
-&lt;h2 id=&quot;concluding-the-series&quot;&gt;Concluding the Series&lt;/h2&gt;
-&lt;p&gt;With that, you&#39;ve confirmed that the domain is working and appropriately configured. You&#39;re now ready to pentest against the domain!&lt;/p&gt;
-&lt;p&gt;It&#39;s been a pleasure writing this up, and I hope someone finds it helpful.  If you do, please don&#39;t hesitate to leave me a note at Mastodon.&lt;/p&gt;
 </content>
   </entry>
 </feed>
