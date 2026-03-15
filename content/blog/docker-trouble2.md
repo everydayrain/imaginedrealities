@@ -2,7 +2,9 @@
 title: Revisiting Docker Management and Troubleshooting
 date:
 tags:
- -
+  - homeprod
+  - docker
+  - logs
 ---
 
 {% image '/img/dockhandgeneric.png', '' %}
