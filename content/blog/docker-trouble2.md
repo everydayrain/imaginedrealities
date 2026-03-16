@@ -14,14 +14,14 @@ In this post I revisit the topic of homelab Docker container management and trou
 
 **Overview in Brief**
 
-- {% linkprimary "Why WUIs", "<https://christopherbauer.xyz/blog/docker-trouble2/#why-wuis>" %}
-	- {% linkprimary "Dozzle", "<https://christopherbauer.xyz/blog/docker-trouble2/#dozzle>" %}
-	- {% linkprimary "Arcane", "<https://christopherbauer.xyz/blog/docker-trouble2/#arcane>" %}
-	- {% linkprimary "Dockhand", "<https://christopherbauer.xyz/blog/docker-trouble2/#dockhand>" %}
-- {% linkprimary "Conclusion", "<https://christopherbauer.xyz/blog/docker-trouble2/#conclusion>" %}
+- {% linkprimary "Why WUIs", "https://christopherbauer.xyz/blog/docker-trouble2/#why-wuis" %}
+	- {% linkprimary "Dozzle", "https://christopherbauer.xyz/blog/docker-trouble2/#dozzle" %}
+	- {% linkprimary "Arcane", "https://christopherbauer.xyz/blog/docker-trouble2/#arcane" %}
+	- {% linkprimary "Dockhand", "https://christopherbauer.xyz/blog/docker-trouble2/#dockhand" %}
+- {% linkprimary "Conclusion", "https://christopherbauer.xyz/blog/docker-trouble2/#conclusion" %}
 
 ## Why WUIs
-In a [previous post](https://christopherbauer.xyz/blog/docker-trouble/) I lamented the state of tools for troubleshooting Docker containers. It seems that all I needed to do to solve my problem was broaden my horizons from TUI-based to WUI-based tools! In the WUI space we're spoiled for choice. Many are new to me, though according to {% linkprimary "Ethan Sholly", "<https://selfh.st/post/2025-favorite-new-apps/>" %} Arcane came out in 2025, so some are new to many as well. Sholly points out elsewhere that there has been an explosion of these kinds of apps recently, with a lot of overlap in capabilities. I've tried a few, but I am not making any claims about this post being exhaustive. 
+In a [previous post](https://christopherbauer.xyz/blog/docker-trouble/) I lamented the state of tools for troubleshooting Docker containers. It seems that all I needed to do to solve my problem was broaden my horizons from TUI-based to WUI-based tools! In the WUI space we're spoiled for choice. Many are new to me, though according to {% linkprimary "Ethan Sholly", "https://selfh.st/post/2025-favorite-new-apps/" %} Arcane came out in 2025, so some are new to many as well. Sholly points out elsewhere that there has been an explosion of these kinds of apps recently, with a lot of overlap in capabilities. I've tried a few, but I am not making any claims about this post being exhaustive. 
 
 Why move away from TUIs? The simple answer is that I have a growing homelab container environment. I tended to favor the simplicity of TUIs over an orchestration console when I had a half dozen containers because I found it easier to SSH directly into a single server and start up a TUI. I favored [Oxker](https://github.com/mrjackwills/oxker), for no other reason than the spatial layout made sense to me, and it was more organized than using Docker native commands.
 

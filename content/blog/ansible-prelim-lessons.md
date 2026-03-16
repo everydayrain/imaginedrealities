@@ -2,6 +2,8 @@
 title: Lessons Learned on Ansible Vault
 date: 2025-04-04
 tags:
+  - ansible
+  - TIL
 ---
 
 Ansible has fair documentation. Many of the docs however focus narrowly on a given command and its functions. While this can be useful to a seasoned user, some, such as {% linkprimary "Ansible's Vault docs", "https://docs.ansible.com/ansible/latest/vault_guide/index.html" %} don't provide the larger context on how a `ansible-vault` encrypted sudo password is incorporated and deployed in a playbook in conjunction with the Ansible vault password. In this post I'm offering a quick write up of my understanding of this context from early in my study of Ansible.
