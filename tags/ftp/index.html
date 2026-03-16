@@ -3,11 +3,11 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Lessons Learned on Ansible Vault</title>
-<meta content="Lessons Learned on Ansible Vault" property="og:title">
-<meta content="Lessons Learned on Ansible Vault" name="twitter:title">
-<meta content="Lessons Learned on Ansible Vault" name="title">
-<meta content="Lessons Learned on Ansible Vault" property="og:site_name">
+<title>Tagged &#39;ftp&#39;</title>
+<meta content="Tagged &#39;ftp&#39;" property="og:title">
+<meta content="Tagged &#39;ftp&#39;" name="twitter:title">
+<meta content="Tagged &#39;ftp&#39;" name="title">
+<meta content="Tagged &#39;ftp&#39;" property="og:site_name">
 <meta content="" name="description">
 <meta content="" property="facebook:description">
 <meta content="" property="og:description">
@@ -21,13 +21,13 @@
 <meta content="" property="twitter:author">
 <meta content="" name="twitter:site">
 <meta property="og:type" content="website">
-<link rel="canonical" href="https://christopherbauer.xyz/blog/ansible-prelim-lessons/">
+<link rel="canonical" href="https://christopherbauer.xyz/tags/ftp/">
 <link rel="alternate" href="feed/feed.xml" type="application/atom+xml" title="Christopher Carter Bauer">
 <meta name="language" content="en">
 <meta name="locale" content="en_US">
 <meta property="og:locale" content="en_US">
 <meta name="generator" content="Eleventy v3.1.2"> 
-<script type="application/ld+json">{"@context":"https://schema.org","@type":"WebSite","description":"","headline":"Christopher Carter Bauer - ","name":"Christopher Carter Bauer","url":"https://christopherbauer.xyz/blog/ansible-prelim-lessons/"}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"WebSite","description":"","headline":"Christopher Carter Bauer - ","name":"Christopher Carter Bauer","url":"https://christopherbauer.xyz/tags/ftp/"}</script>
 <meta name="generator" content="Eleventy v3.1.2">
 <meta name="color-scheme" content="light dark">
 <style>@charset "UTF-8";/*!
@@ -98,63 +98,28 @@ Dark
 <main id="skip">
 <header class="container">
 <hgroup>
-<h1 id="lessons-learned-on-ansible-vault"><a href="/blog/ansible-prelim-lessons/">Lessons Learned on Ansible Vault</a></h1>
+<h1 id="tagged-ftp"><a href="/tags/ftp/">Tagged &#39;ftp&#39;</a></h1>
 <h2 id=""><em></em></h2>
 </hgroup>
 </header>
-<div class="container">
-<p>
-<a href="/tags/ansible/"><small>ansible</small></a> ,
-<a href="/tags/til/"><small>TIL</small></a></p>
-</div>
 <div class="container snls snts">
 <heading-anchors>
-<p><time datetime="2025-04-04">04 April 2025</time></p>
-<p>Ansible has fair documentation. Many of the docs however focus narrowly on a given command and its functions. While this can be useful to a seasoned user, some, such as <a href="https://docs.ansible.com/ansible/latest/vault_guide/index.html" class="primary">Ansible's Vault docs</a>  don't provide the larger context on how a <code>ansible-vault</code> encrypted sudo password is incorporated and deployed in a playbook in conjunction with the Ansible vault password. In this post I'm offering a quick write up of my understanding of this context from early in my study of Ansible.</p>
-<h2 id="when-sudo-requires-a-password">When Sudo Requires a Password</h2>
-<p>One of the trickiest parts of getting started with Ansible has been figuring out how Ansible handles a remote host's password prompts for activities requiring sudo privileges. To remedy this, I created an <code>ansible-vault</code> file with the sudo password.</p>
-<p>The steps weren't complicated, but how they all fit together was unclear. First, I created a file that would store my password, encrypted, with the dedicated Ansible command.</p>
-<pre class="language-shell" tabindex="0"><code class="language-shell">ansible-vault create <span class="token operator">&lt;</span>SOME_FILE.yaml<span class="token operator">></span></code></pre>
-<p>When the command runs it prompted me to create an Ansible vault password for use in decrypting the file. I saved that Ansible Vault password somewhere safe.</p>
-<p>To take advantage of that stored password (i.e. when the remote host prompts during Ansible's run) I next had to specify the path to that password file in my playbook.</p>
-<p>Say, for example, I wanted to ensure the correct timezone was set on a remote host. I might create the following task in some playbook.</p>
-<pre class="language-yaml" tabindex="0"><code class="language-yaml"><span class="token punctuation">-</span> <span class="token key atrule">name</span><span class="token punctuation">:</span> Set timezone to Los_Angeles
- <span class="token key atrule">become</span><span class="token punctuation">:</span> <span class="token boolean important">true</span>
- <span class="token key atrule">community.general.timezone</span><span class="token punctuation">:</span>
-  <span class="token key atrule">name</span><span class="token punctuation">:</span> America/Los_Angeles</code></pre>
-<p>The <code>become: true</code> ensures that the task will seek elevated privileges to carry out the timezone change, but it won't have the password for sudo on the remote host. To give Ansible the sudo password, I included the following after <code>become:true</code>:</p>
-<pre class="language-yaml" tabindex="0"><code class="language-yaml"> 
- <span class="token key atrule">vars</span><span class="token punctuation">:</span>
-  <span class="token key atrule">ansible_become_password</span><span class="token punctuation">:</span> <span class="token string">"{{ lookup('ansible.builtin.file', '/PATH/TO/SECRET/PASSWORD/FILE.yml') }}"</span>
- </code></pre>
-<p>That <code>ansible_become_password</code> variable ensured Ansible sought out the password file I created to complete the sudo password prompt.</p>
-<p>Now I was ready to run the playbook.  The last piece involved making sure I added <code>--ask-vault-pass</code> as a parameter to the <code>ansible-playbook</code> command.  That ensured that Ansible would prompt me for the Vault password needed decrypt the file containing the sudo password and use the sudo password in setting the time.</p>
-<p>Simple right?</p>
+<h3 id="tagged-ftp-2">Tagged “ftp”</h3>
 
+
+
+<h3 id="installing-vsftp-in-a-proxmox-lxc-container-or-how-i-learned-the-lessons-of-the-sysadmin">
+<a href="/blog/2025-01-07-vsftpd/" class="postlist-link">Installing VSFTP in a Proxmox LXC Container Or: &quot;How I Learned the Lessons of the SysAdmin&quot;</a>
+</h3><hr>
+
+
+<p><a href="/tags" type="button" class="contrast">Explore all tags</a>.</p>
 
 </heading-anchors>
 <div class="container p-5">
 <nav>
-
-<ul>
-<li>
-<a href="/blog/caddy-rev-proxy/" title="Caddy Reverse Proxy with TLS and Cloudflare DNS Challenge - A Caddyfile Example" role="button" class="primary">
-<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-left" viewBox="0 0 16 16">
-  <path fill-rule="evenodd" d="M15 8a.5.5 0 0 0-.5-.5H2.707l3.147-3.146a.5.5 0 1 0-.708-.708l-4 4a.5.5 0 0 0 0 .708l4 4a.5.5 0 0 0 .708-.708L2.707 8.5H14.5A.5.5 0 0 0 15 8"></path>
-</svg> <small>Previous</small>
-</a>
-</li>
-</ul>
-
-<ul>
-<li>
-<a href="/blog/sophos-2025/" title="Brief Thoughts on the 2025 Sophos Report" role="button" class="primary">
-<small>Next</small> <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-right" viewBox="0 0 16 16">
-  <path fill-rule="evenodd" d="M1 8a.5.5 0 0 1 .5-.5h11.793l-3.147-3.146a.5.5 0 0 1 .708-.708l4 4a.5.5 0 0 1 0 .708l-4 4a.5.5 0 0 1-.708-.708L13.293 8.5H1.5A.5.5 0 0 1 1 8"></path>
-</svg>
-</a>
-</li>
-</ul>
+<ul><li><a href="/tags/homeprod/" class="secondary">← Previous</a></li></ul>
+<ul><li><a href="/tags/proxmox/" class="secondary">Next →</a></li></ul>
 </nav>
 </div>
 

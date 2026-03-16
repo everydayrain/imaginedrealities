@@ -5,7 +5,7 @@
   <subtitle>Cyber Security and Stray Thoughts.</subtitle>
   <link href="https://christopherbauer.xyz/feed/feed.xml" rel="self" />
   <link href="https://christopherbauer.xyz/" />
-  <updated>2026-03-15T20:13:36Z</updated>
+  <updated>2026-03-16T15:13:08Z</updated>
   <id>https://christopherbauer.xyz/</id>
   <author>
     <name>Christopher Bauer</name>
@@ -13,24 +13,24 @@
   <entry>
     <title>Revisiting Docker Management and Troubleshooting</title>
     <link href="https://christopherbauer.xyz/blog/docker-trouble2/" />
-    <updated>2026-03-15T20:13:36Z</updated>
+    <updated>2026-03-16T15:13:08Z</updated>
     <id>https://christopherbauer.xyz/blog/docker-trouble2/</id>
     <content type="html">&lt;img src=&quot;https://christopherbauer.xyz/img/dockhandgeneric.png&quot; loading=&quot;lazy&quot; title=&quot;&quot;&gt;
 &lt;br&gt; &lt;br&gt;
 &lt;p&gt;In this post I revisit the topic of homelab Docker container management and troubleshooting. I introduce a few new to me Web User Interface-based (WUI) tools. I&#39;ll dig into why I&#39;ve moved away from Terminal User Interface (TUI) tools towards the more complex architecture of an agent-based management console with Dockhand.&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;Overview in Brief&lt;/strong&gt;&lt;/p&gt;
 &lt;ul&gt;
-&lt;li&gt;&lt;a href=&quot;https://christopherbauer.xyz/blog/docker-trouble2/%3Chttps:/christopherbauer.xyz/blog/docker-trouble2/#why-wuis%3E#why-wuis%3E&quot; class=&quot;primary&quot;&gt;Why WUIs&lt;/a&gt;
+&lt;li&gt;&lt;a href=&quot;https://christopherbauer.xyz/blog/docker-trouble2/#why-wuis&quot; class=&quot;primary&quot;&gt;Why WUIs&lt;/a&gt;
 &lt;ul&gt;
-&lt;li&gt;&lt;a href=&quot;https://christopherbauer.xyz/blog/docker-trouble2/%3Chttps:/christopherbauer.xyz/blog/docker-trouble2/#dozzle%3E#dozzle%3E&quot; class=&quot;primary&quot;&gt;Dozzle&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href=&quot;https://christopherbauer.xyz/blog/docker-trouble2/%3Chttps:/christopherbauer.xyz/blog/docker-trouble2/#arcane%3E#arcane%3E&quot; class=&quot;primary&quot;&gt;Arcane&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href=&quot;https://christopherbauer.xyz/blog/docker-trouble2/%3Chttps:/christopherbauer.xyz/blog/docker-trouble2/#dockhand%3E#dockhand%3E&quot; class=&quot;primary&quot;&gt;Dockhand&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;https://christopherbauer.xyz/blog/docker-trouble2/#dozzle&quot; class=&quot;primary&quot;&gt;Dozzle&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;https://christopherbauer.xyz/blog/docker-trouble2/#arcane&quot; class=&quot;primary&quot;&gt;Arcane&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;https://christopherbauer.xyz/blog/docker-trouble2/#dockhand&quot; class=&quot;primary&quot;&gt;Dockhand&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;
 &lt;/li&gt;
-&lt;li&gt;&lt;a href=&quot;https://christopherbauer.xyz/blog/docker-trouble2/%3Chttps:/christopherbauer.xyz/blog/docker-trouble2/#conclusion%3E#conclusion%3E&quot; class=&quot;primary&quot;&gt;Conclusion&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;https://christopherbauer.xyz/blog/docker-trouble2/#conclusion&quot; class=&quot;primary&quot;&gt;Conclusion&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;
 &lt;h2 id=&quot;why-wuis&quot;&gt;Why WUIs&lt;/h2&gt;
-&lt;p&gt;In a &lt;a href=&quot;https://christopherbauer.xyz/blog/docker-trouble/&quot;&gt;previous post&lt;/a&gt; I lamented the state of tools for troubleshooting Docker containers. It seems that all I needed to do to solve my problem was broaden my horizons from TUI-based to WUI-based tools! In the WUI space we&#39;re spoiled for choice. Many are new to me, though according to &lt;a href=&quot;https://christopherbauer.xyz/blog/docker-trouble2/%3Chttps:/selfh.st/post/2025-favorite-new-apps/%3E&quot; class=&quot;primary&quot;&gt;Ethan Sholly&lt;/a&gt;  Arcane came out in 2025, so some are new to many as well. Sholly points out elsewhere that there has been an explosion of these kinds of apps recently, with a lot of overlap in capabilities. I&#39;ve tried a few, but I am not making any claims about this post being exhaustive.&lt;/p&gt;
+&lt;p&gt;In a &lt;a href=&quot;https://christopherbauer.xyz/blog/docker-trouble/&quot;&gt;previous post&lt;/a&gt; I lamented the state of tools for troubleshooting Docker containers. It seems that all I needed to do to solve my problem was broaden my horizons from TUI-based to WUI-based tools! In the WUI space we&#39;re spoiled for choice. Many are new to me, though according to &lt;a href=&quot;https://selfh.st/post/2025-favorite-new-apps/&quot; class=&quot;primary&quot;&gt;Ethan Sholly&lt;/a&gt;  Arcane came out in 2025, so some are new to many as well. Sholly points out elsewhere that there has been an explosion of these kinds of apps recently, with a lot of overlap in capabilities. I&#39;ve tried a few, but I am not making any claims about this post being exhaustive.&lt;/p&gt;
 &lt;p&gt;Why move away from TUIs? The simple answer is that I have a growing homelab container environment. I tended to favor the simplicity of TUIs over an orchestration console when I had a half dozen containers because I found it easier to SSH directly into a single server and start up a TUI. I favored &lt;a href=&quot;https://github.com/mrjackwills/oxker&quot;&gt;Oxker&lt;/a&gt;, for no other reason than the spatial layout made sense to me, and it was more organized than using Docker native commands.&lt;/p&gt;
 &lt;p&gt;Now that my containers have grown beyond a dozen, and they exist on multiple different machines, the complexity of command-line (CLI) operations has increased my cognitive load. When I began looking into other Docker container management options, the WUI came as a breath of fresh air in managing this distributed environment.&lt;/p&gt;
 &lt;p&gt;Below I list out a few of these options in the order in which I encountered them. They all offered &amp;quot;free as in beer&amp;quot; versions at the time of this writing. In keeping with the rest of my home lab, I self-hosted these Docker containers using compose files.&lt;/p&gt;
